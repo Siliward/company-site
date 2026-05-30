@@ -1,0 +1,60 @@
+{
+  "slug": "wordex",
+  "name": "WordeX",
+  "tagline": "面向中文正式文档的语义化 Word 编辑器",
+  "fullName": "WordeX Editor",
+  "description": "WordeX 让作者和大模型用 .wex 语义源文件描述文档结构，再通过模板包编译为规范的 Word .docx 文档，适合技术报告、期刊论文、通知和公文类材料。",
+  "platform": "Web editor + DOCX compiler",
+  "reservedPath": "/wordex",
+  "status": "Online editor coming soon",
+  "features": [
+    {
+      "title": "语义化 WEX 写作",
+      "text": "用标题、章节、图表、公式、引用和元数据描述文档语义，而不是手工堆叠 Word 样式。"
+    },
+    {
+      "title": "模板包驱动排版",
+      "text": "通过 include 加载内置或自定义模板包，让同一份内容按技术报告、期刊论文或业务模板输出。"
+    },
+    {
+      "title": "在线项目工作区",
+      "text": "在浏览器中管理项目文件、上传素材、编辑 .wex/.md/.tex 等文本文件，并编译当前文档。"
+    },
+    {
+      "title": "公式图表和引用",
+      "text": "支持行内公式、展示公式、图片、表格、标签引用和参考文献编号，输出 Word 可编辑对象。"
+    },
+    {
+      "title": "DOCX 模板提取",
+      "text": "可从参考 DOCX 生成可维护的 WEX 模板包初稿，再由人工或 agent 继续校准版式。"
+    },
+    {
+      "title": "Agent 友好工作流",
+      "text": "语义源文件和模板上下文更适合大模型读取、修改、复核，减少直接操作复杂 Word 结构的成本。"
+    }
+  ],
+  "useCases": [
+    "电磁兼容、检测认证等技术报告",
+    "中文期刊论文和会议论文模板",
+    "企业通知、制度、方案和交付文档",
+    "需要大模型参与起草和修订的正式材料"
+  ],
+  "faq": [
+    {
+      "question": "WordeX 是在线 Word 吗？",
+      "answer": "不是。WordeX 的重点是用 .wex 语义源文件和模板包生成 Word .docx，而不是复刻 Word 的所有可视化编辑能力。"
+    },
+    {
+      "question": "现在可以直接使用在线编辑器吗？",
+      "answer": "官网已预留 /wordex 作为在线编辑器入口。正式服务部署完成后，会在该路径开放。"
+    },
+    {
+      "question": "生成的文档能在 Microsoft Word 中编辑吗？",
+      "answer": "可以。WordeX 输出标准 .docx，公式、段落、表格和图片会尽量以 Word 可编辑结构生成。"
+    },
+    {
+      "question": "模板需要写代码吗？",
+      "answer": "模板主要由 WEX 文件描述页面、样式、编号和别名。复杂模板可先从参考 DOCX 提取初稿，再继续调整。"
+    }
+  ]
+}

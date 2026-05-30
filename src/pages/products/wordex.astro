@@ -1,0 +1,155 @@
+---
+import Layout from "../../components/Layout.astro";
+import ButtonLink from "../../components/ButtonLink.astro";
+import SectionHeading from "../../components/SectionHeading.astro";
+import FaqList from "../../components/FaqList.astro";
+import wordex from "../../data/products/wordex.json";
+
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: wordex.name,
+  applicationCategory: "ProductivityApplication",
+  operatingSystem: "Web",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "CNY" }
+};
+
+const workflow = [
+  ["编写", "用 .wex 描述标题、章节、公式、图表、引用和模板字段。"],
+  ["校验", "在编辑器中查看语法提示、依赖关系和项目文件。"],
+  ["编译", "按模板包把语义文档渲染为 Word .docx。"],
+  ["修订", "围绕源文件和模板包迭代内容、样式和交付格式。"]
+];
+---
+
+<Layout title={`${wordex.name} - ${wordex.tagline}`} description={wordex.description} canonicalPath="/products/wordex">
+  <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(softwareSchema)} />
+
+  <section class="section-shell grid min-h-[calc(100vh-64px)] items-center gap-12 py-14 lg:grid-cols-[0.92fr_1.08fr]">
+    <div>
+      <p class="text-sm font-semibold uppercase tracking-wider text-leaf">WordeX Editor</p>
+      <h1 class="mt-4 max-w-3xl text-5xl font-semibold tracking-normal text-ink md:text-6xl">
+        {wordex.tagline}
+      </h1>
+      <p class="mt-6 max-w-2xl text-lg leading-8 text-ink/68">{wordex.description}</p>
+      <p class="mt-3 text-sm font-semibold text-leaf">{wordex.platform}</p>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <ButtonLink href={wordex.reservedPath}>打开 WordeX</ButtonLink>
+        <ButtonLink href="/wordex/docs" variant="secondary">说明文档</ButtonLink>
+      </div>
+      <div class="mt-5 grid max-w-xl gap-3 sm:grid-cols-3">
+        {[
+          ["Source", ".wex"],
+          ["Output", ".docx"],
+          ["Status", "Coming soon"]
+        ].map(([label, value]) => (
+          <div class="rounded-lg border border-ink/10 bg-white/76 p-3">
+            <p class="text-xs font-semibold uppercase tracking-wider text-ink/40">{label}</p>
+            <p class="mt-1 break-words text-sm font-semibold text-ink">{value}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="relative overflow-hidden rounded-lg border border-ink/10 bg-white p-5 shadow-soft">
+      <div class="flex items-center justify-between border-b border-ink/10 pb-4">
+        <div class="flex items-center gap-2">
+          <span class="h-3 w-3 rounded-full bg-red-400"></span>
+          <span class="h-3 w-3 rounded-full bg-ember"></span>
+          <span class="h-3 w-3 rounded-full bg-moss"></span>
+        </div>
+        <span class="rounded-full bg-mint px-3 py-1 text-xs font-semibold text-leaf">WEX Workspace</span>
+      </div>
+      <div class="grid min-h-[520px] gap-4 pt-5 lg:grid-cols-[0.72fr_1.28fr]">
+        <aside class="rounded-lg bg-ink p-4 text-white">
+          <p class="text-sm font-semibold">tech-report</p>
+          <div class="mt-5 space-y-2">
+            {["main.wex", "templates", "assets", "dist"].map((item, index) => (
+              <div class={`rounded-lg px-3 py-2 text-sm ${index === 0 ? "bg-white text-ink" : "bg-white/8 text-white/76"}`}>{item}</div>
+            ))}
+          </div>
+        </aside>
+        <section class="grid gap-4">
+          <div class="rounded-lg border border-ink/10 bg-cloud p-4 font-mono text-sm leading-7 text-ink/76">
+            <p><span class="text-leaf">\include</span>{"{@builtin/tech.report.basic}"}</p>
+            <p><span class="text-leaf">\title</span>{"{电磁兼容测试技术报告}"}</p>
+            <p><span class="text-leaf">\section</span>{"{测试概述}"}</p>
+            <p>场强计算公式为 <span class="text-leaf">$E = V / d$</span>。</p>
+            <p><span class="text-leaf">\figure</span>{"{assets/setup.png}[caption=测试布置]"}</p>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="rounded-lg border border-ink/10 bg-white p-4">
+              <p class="text-sm font-semibold text-ink">Template</p>
+              <p class="mt-2 text-sm leading-6 text-ink/60">tech.report.basic</p>
+            </div>
+            <div class="rounded-lg border border-ink/10 bg-white p-4">
+              <p class="text-sm font-semibold text-ink">Compile</p>
+              <p class="mt-2 text-sm leading-6 text-ink/60">main.wex -> report.docx</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-20">
+    <div class="section-shell">
+      <SectionHeading eyebrow="Workflow" title="把正式文档变成可维护的源文件和模板" text="WordeX 关注内容语义、模板约束和 Word 输出之间的稳定转换，让人和 AI 都能围绕同一份结构化文档协作。" />
+      <div class="mt-10 grid gap-4 md:grid-cols-4">
+        {workflow.map(([title, text], index) => (
+          <article class="rounded-lg border border-ink/10 bg-cloud p-5">
+            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-leaf text-sm font-semibold text-white">{index + 1}</span>
+            <h2 class="mt-5 text-xl font-semibold text-ink">{title}</h2>
+            <p class="mt-3 text-sm leading-6 text-ink/64">{text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="features" class="section-shell py-20">
+    <SectionHeading eyebrow="Capabilities" title="覆盖从语义写作到 DOCX 输出的关键环节" text="当前能力来自 WordeX 编辑器和编译器仓库，官网先展示产品方向，并预留在线编辑器入口。" />
+    <div class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {wordex.features.map((feature) => (
+        <article class="rounded-lg border border-ink/10 bg-white p-5 shadow-sm">
+          <h2 class="text-lg font-semibold text-ink">{feature.title}</h2>
+          <p class="mt-3 text-sm leading-6 text-ink/64">{feature.text}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="bg-white py-20">
+    <div class="section-shell grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-wider text-leaf">Use cases</p>
+        <h2 class="mt-3 text-3xl font-semibold text-ink md:text-4xl">优先服务高格式要求的中文正式文档</h2>
+        <p class="mt-4 text-sm leading-6 text-ink/64">当文档需要反复生成、套用模板、保留公式图表编号，或由 AI 参与起草时，语义源文件比直接修改 Word 更容易维护。</p>
+      </div>
+      <div class="grid gap-3 sm:grid-cols-2">
+        {wordex.useCases.map((item) => (
+          <div class="rounded-lg border border-ink/10 bg-cloud p-4 text-sm font-semibold leading-6 text-ink/72">{item}</div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-shell py-20">
+    <div class="rounded-lg border border-leaf/20 bg-mint p-8 text-center md:p-10">
+      <p class="text-sm font-semibold uppercase tracking-wider text-leaf">Reserved path</p>
+      <h2 class="mt-3 text-3xl font-semibold text-ink md:text-4xl">在线编辑器入口已预留</h2>
+      <p class="mx-auto mt-4 max-w-2xl text-sm leading-6 text-ink/64">正式部署完成后，WordeX 在线编辑器会在 /wordex 开放。当前产品页不暴露私有仓库地址。</p>
+      <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+        <ButtonLink href={wordex.reservedPath}>前往 /wordex</ButtonLink>
+        <ButtonLink href="/#solutions" variant="secondary">了解公司服务</ButtonLink>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-shell py-20">
+    <SectionHeading eyebrow="FAQ" title="上线前常见问题" />
+    <div class="mt-10">
+      <FaqList items={wordex.faq} />
+    </div>
+  </section>
+</Layout>
