@@ -1,35 +1,29 @@
 ---
 import Layout from "../components/Layout.astro";
 import { company } from "../data/company";
+
+const sections = [
+  ["我们提供什么", `${company.name} 提供公司官网、WordeX 在线文档服务，以及未来可能上线的代转发 AI 服务。`],
+  ["你需要遵守什么", "请确保你输入的内容、上传的文件，以及使用第三方模型账号的方式，都符合相关法律、所用服务的条款和你所在组织的规定。"],
+  ["关于第三方模型", "使用你自己的模型账号时，模型服务由你选择的第三方提供。它们的可用性、费用和数据处理规则，适用各自的条款。"],
+  ["关于托管 AI 服务", "代转发的 AI 服务尚未开放。上线前我们会补充订阅、额度、退款、滥用处理和数据保留等条款。"],
+  ["免责说明", "AI 生成的内容可能不准确。涉及法律、医疗、财务和正式材料等重要事项时，请务必自行核实。"]
+];
 ---
 
-<Layout title="Terms of Service" description="Terms of service draft for Friday and hosted services." canonicalPath="/terms">
-  <section class="section-shell max-w-4xl py-16">
-    <p class="text-sm font-semibold uppercase tracking-wider text-leaf">Terms</p>
-    <h1 class="mt-4 text-4xl font-semibold text-ink md:text-5xl">用户协议草案</h1>
-    <p class="mt-5 text-sm leading-6 text-ink/56">最后更新：2026-05-10。此页面用于首版站点占位，正式发布前需要法务审核。</p>
+<Layout title="用户协议" description="Siliward 与 WordeX 的用户协议。" canonicalPath="/terms" theme="company">
+  <section class="section-shell max-w-4xl py-20">
+    <p class="font-mono text-xs uppercase tracking-[0.2em] text-accent">用户协议</p>
+    <h1 class="mt-4 font-display text-4xl font-semibold text-content md:text-5xl">使用我们的服务前，请了解</h1>
+    <p class="mt-5 text-sm leading-7 text-faint">最后更新：2026-05-10。本页为首版占位，正式发布前会经法务审核。</p>
 
-    <div class="mt-10 space-y-8 text-base leading-8 text-ink/70">
-      <section>
-        <h2 class="text-2xl font-semibold text-ink">服务范围</h2>
-        <p class="mt-3">{company.name} 提供公司官网、Friday 桌面应用下载，以及未来可能上线的托管 AI 转发服务。</p>
-      </section>
-      <section>
-        <h2 class="text-2xl font-semibold text-ink">用户责任</h2>
-        <p class="mt-3">用户应确保输入内容、上传或拖入的文件、第三方模型密钥和 Codex 命令使用符合适用法律、第三方服务条款和所在组织政策。</p>
-      </section>
-      <section>
-        <h2 class="text-2xl font-semibold text-ink">第三方模型服务</h2>
-        <p class="mt-3">用户自填密钥模式下，模型服务由用户选择的第三方提供。第三方的可用性、费用和数据处理规则适用其自身条款。</p>
-      </section>
-      <section>
-        <h2 class="text-2xl font-semibold text-ink">托管 AI 服务</h2>
-        <p class="mt-3">托管 AI 转发服务尚未开放。上线前会补充订阅、额度、退款、滥用处理和数据保留条款。</p>
-      </section>
-      <section>
-        <h2 class="text-2xl font-semibold text-ink">免责声明</h2>
-        <p class="mt-3">AI 输出可能不准确。用户需要自行核验重要内容，尤其是法律、医疗、财务、代码执行和生产环境变更。</p>
-      </section>
+    <div class="mt-12 space-y-10">
+      {sections.map(([title, body]) => (
+        <section class="reveal">
+          <h2 class="font-display text-2xl font-semibold text-content">{title}</h2>
+          <p class="mt-3 text-base leading-8 text-muted">{body}</p>
+        </section>
+      ))}
     </div>
   </section>
 </Layout>

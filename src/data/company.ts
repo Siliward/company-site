@@ -2,9 +2,9 @@ export const company = {
   name: "Siliward",
   legalNameZh: "北京硅途数智科技有限公司",
   legalNameEn: "Beijing SiliWard Technology Co., Ltd.",
-  tagline: "用 AI 数智化，赋能千行百业",
+  tagline: "做我们自己每天都在用的 AI",
   description:
-    "北京硅途数智科技有限公司是一家专注于人工智能技术研发与行业落地的创新型科技企业，总部位于北京。公司聚焦大模型应用、智能算法研发与数字化转型解决方案，为个人和企业提供全链路 AI 技术服务与产品落地支持。",
+    "我们是一支位于北京的 AI 产品团队。我们打造了 WordeX 这样的文档生产工具，也帮企业把 AI 真正用进日常业务里——不停在演示，而是做成每天都离不开的工具。",
   contactEmail: "siliward@163.com",
-  domain: "example.com"
+  domain: "siliward.github.io"
 };

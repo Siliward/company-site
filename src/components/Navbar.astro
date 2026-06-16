@@ -2,34 +2,37 @@
 import { company } from "../data/company";
 import { withBase } from "../utils/paths";
 
+interface Props {
+  theme?: "company" | "friday" | "wordex";
+}
+
+const { theme = "company" } = Astro.props;
+
 const links = [
   { href: "/", label: "公司" },
-  { href: "/products/friday", label: "Friday" },
   { href: "/products/wordex", label: "WordeX" },
-  { href: "/download", label: "下载" },
-  { href: "/pricing", label: "定价" },
-  { href: "/updates", label: "更新" }
+  { href: "/wordex/docs", label: "文档" }
 ];
 ---
 
-<header class="sticky top-0 z-40 border-b border-ink/10 bg-white/84 backdrop-blur-xl">
+<header class="sticky top-0 z-40 border-b border-line bg-[var(--nav-bg)] backdrop-blur-xl">
   <nav class="section-shell flex min-h-16 items-center justify-between gap-4">
-    <a href={withBase("/")} class="focus-ring flex items-center gap-3 rounded-md" aria-label={`${company.name} home`}>
-      <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-ink text-sm font-bold text-white">SW</span>
-      <span class="text-base font-semibold tracking-normal text-ink">{company.name}</span>
+    <a href={withBase("/")} class="focus-ring flex items-center gap-2.5 rounded-md" aria-label={`${company.name} 首页`}>
+      <span class="flex h-9 w-9 items-center justify-center rounded-theme bg-accent text-sm font-bold text-accent-contrast">硅</span>
+      <span class="font-display text-lg font-semibold tracking-tight text-content">{company.name}</span>
     </a>
     <div class="hidden items-center gap-7 md:flex">
       {links.map((link) => (
-        <a class="focus-ring rounded-md text-sm font-medium text-ink/72 transition hover:text-leaf" href={withBase(link.href)}>
+        <a class="focus-ring rounded-md text-sm font-medium text-muted transition hover:text-accent" href={withBase(link.href)}>
           {link.label}
         </a>
       ))}
     </div>
     <a
-      href={withBase("/download")}
-      class="focus-ring inline-flex items-center justify-center rounded-lg bg-leaf px-4 py-2 text-sm font-semibold text-white shadow-soft transition hover:bg-ink"
+      href={withBase("/products/wordex")}
+      class="focus-ring inline-flex items-center justify-center rounded-theme bg-accent px-4 py-2 text-sm font-semibold text-accent-contrast shadow-soft transition hover:opacity-90"
     >
-      下载 Friday
+      了解 WordeX
     </a>
   </nav>
 </header>

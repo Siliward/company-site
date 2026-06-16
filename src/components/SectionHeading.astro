@@ -3,13 +3,15 @@ interface Props {
   eyebrow?: string;
   title: string;
   text?: string;
+  align?: "center" | "left";
 }
 
-const { eyebrow, title, text } = Astro.props;
+const { eyebrow, title, text, align = "center" } = Astro.props;
+const wrap = align === "center" ? "mx-auto max-w-3xl text-center" : "max-w-3xl";
 ---
 
-<div class="mx-auto max-w-3xl text-center">
-  {eyebrow && <p class="text-sm font-semibold uppercase tracking-wider text-leaf">{eyebrow}</p>}
-  <h2 class="mt-3 text-3xl font-semibold tracking-normal text-ink md:text-4xl">{title}</h2>
-  {text && <p class="mt-4 text-base leading-7 text-ink/64">{text}</p>}
+<div class={wrap}>
+  {eyebrow && <p class="text-xs font-semibold uppercase tracking-[0.16em] text-accent">{eyebrow}</p>}
+  <h2 class="mt-3 font-display text-3xl font-semibold tracking-tight text-content md:text-4xl">{title}</h2>
+  {text && <p class="mt-4 text-base leading-7 text-muted">{text}</p>}
 </div>

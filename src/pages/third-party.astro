@@ -1,23 +1,25 @@
 ---
 import Layout from "../components/Layout.astro";
+
+const notices = [
+  ["模型服务", "WordeX 支持 OpenAI、DeepSeek 或其他兼容接口的模型服务。使用你自己的模型账号时，数据处理遵循你所选服务商的条款。"],
+  ["开源依赖", "我们的产品基于成熟的开源技术构建。正式发布前，我们会在网页上公开完整的开源许可证清单。"],
+  ["素材授权", "官网的图标、截图和宣传视觉，在正式发布前都会取得可商用授权。参考用的网络素材和第三方标识不会被沿用。"],
+  ["安全反馈", "如果你发现安全漏洞或供应链问题，欢迎通过官网公布的安全邮箱联系我们；专用邮箱上线前先使用联系邮箱。"]
+];
 ---
 
-<Layout title="Third-party Notices" description="Third-party model, open-source, and asset notices for Friday." canonicalPath="/third-party">
-  <section class="section-shell max-w-4xl py-16">
-    <p class="text-sm font-semibold uppercase tracking-wider text-leaf">Third-party</p>
-    <h1 class="mt-4 text-4xl font-semibold text-ink md:text-5xl">第三方服务与开源说明</h1>
-    <p class="mt-5 text-base leading-7 text-ink/64">此页面用于集中说明模型服务、开源依赖和素材授权状态。正式发布前需要补齐完整许可证清单和素材授权文件。</p>
+<Layout title="第三方与开源说明" description="WordeX 的模型服务、开源依赖与素材授权说明。" canonicalPath="/third-party" theme="company">
+  <section class="section-shell max-w-4xl py-20">
+    <p class="font-mono text-xs uppercase tracking-[0.2em] text-accent">第三方与开源</p>
+    <h1 class="mt-4 font-display text-4xl font-semibold text-content md:text-5xl">我们用到的服务与素材</h1>
+    <p class="mt-5 text-base leading-7 text-muted">这里集中说明模型服务、开源依赖和素材授权情况。正式发布前会补齐完整的许可证清单和授权文件。</p>
 
-    <div class="mt-10 grid gap-5">
-      {[
-        ["模型服务", "Friday 支持 OpenAI、DeepSeek 或兼容 OpenAI Chat Completions API 的自定义服务商。用户自填密钥模式下，数据处理遵循用户选择的服务商条款。"],
-        ["开源依赖", "桌面应用当前核心依赖包括 Electron、React、OpenAI SDK、ws、uiohook-napi 等。发布前应生成并随安装包或网页公开完整许可证清单。"],
-        ["素材授权", "Friday 角色图、图标、截图和营销视觉在公开发布前必须取得公司可商用授权。参考网页素材和学校 logo 不会被复用。"],
-        ["安全披露", "如发现漏洞或供应链问题，请通过官网公开的安全邮箱联系。正式邮箱上线前使用联系邮箱占位。"]
-      ].map(([title, text]) => (
-        <article class="rounded-2xl border border-ink/10 bg-white p-6">
-          <h2 class="text-2xl font-semibold text-ink">{title}</h2>
-          <p class="mt-3 text-sm leading-6 text-ink/64">{text}</p>
+    <div class="mt-12 grid gap-5">
+      {notices.map(([title, text], index) => (
+        <article class="reveal rounded-theme-lg border border-line bg-surface p-7" style={`--reveal-delay:${index * 0.06}s`}>
+          <h2 class="font-display text-2xl font-semibold text-content">{title}</h2>
+          <p class="mt-3 text-sm leading-7 text-muted">{text}</p>
         </article>
       ))}
     </div>

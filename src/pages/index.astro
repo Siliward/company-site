@@ -1,192 +1,193 @@
 ---
 import Layout from "../components/Layout.astro";
 import ButtonLink from "../components/ButtonLink.astro";
-import FridayExperience from "../components/FridayExperience.astro";
-import ProductMockup from "../components/ProductMockup.astro";
 import SectionHeading from "../components/SectionHeading.astro";
 import { company } from "../data/company";
-import friday from "../data/products/friday.json";
 import wordex from "../data/products/wordex.json";
 
-const capabilities = [
+const serviceExamples = [
   {
-    title: "大模型应用落地",
-    text: "围绕企业知识库、智能助手、流程自动化和多模态交互，设计可上线、可运维、可迭代的大模型应用。"
+    title: "让团队的知识开口说话",
+    text: "把散落在文档、聊天记录和系统里的资料，变成一个随问随答的内部助手——新人三天上手，老员工少回十遍同样的问题。"
   },
   {
-    title: "智能算法研发",
-    text: "面向业务预测、推荐决策、文本理解、图像识别和异常检测，提供从数据到模型的算法工程服务。"
+    title: "把每天重复的活儿交给 AI",
+    text: "那些填表、归类、整理、核对的工作，一遍遍做最磨人。我们把它们自动化，让人去做真正需要动脑判断的事。"
   },
   {
-    title: "数字化转型解决方案",
-    text: "梳理业务流程和数据资产，建设智能化工作台、自动化运营系统和行业专属 AI 工具链。"
-  },
-  {
-    title: "AI 产品化支持",
-    text: "从原型验证、前后端系统、模型服务、权限审计到部署上线，帮助企业把 AI 能力做成真实产品。"
+    title: "从数据里读出该做的决定",
+    text: "预测、识别、推荐、找异常——把你手里早就有、却没用起来的数据，变成下一步该怎么走的清晰建议。"
   }
 ];
 
 const industries = ["企业办公", "科研教育", "软件研发", "运营管理", "知识服务", "智能制造"];
 
 const process = [
-  "业务诊断与场景定义",
-  "数据与系统接口评估",
-  "原型设计和模型验证",
-  "产品工程和安全治理",
-  "上线部署与持续迭代"
+  ["先聊清楚要解决什么", "不急着上技术。我们先和你一起把问题说明白：到底哪件事卡住了，做成什么样算成功。"],
+  ["看看手上有什么", "评估你现有的系统和数据，告诉你哪些能用、哪些要补，以及边界在哪。"],
+  ["先做个小的试试", "用一个小原型快速验证效果。看到价值，再决定要不要投入更多。"],
+  ["认真地做成产品", "稳定、安全、好维护——我们交付的是能长期用的产品，不是一次性的演示。"],
+  ["上线之后还在", "上线只是开始。我们陪你持续打磨、调优、长出新的能力。"]
 ];
 ---
 
-<Layout title={`${company.name} - ${company.tagline}`} description={company.description} canonicalPath="/">
-  <section class="section-shell grid min-h-[calc(100vh-64px)] items-center gap-12 py-16 lg:grid-cols-[0.95fr_1.05fr]">
-    <div>
-      <p class="text-sm font-semibold uppercase tracking-wider text-leaf">{company.legalNameEn}</p>
-      <h1 class="mt-4 max-w-3xl text-5xl font-semibold tracking-normal text-ink md:text-6xl">
-        {company.tagline}
-      </h1>
-      <p class="mt-6 max-w-2xl text-lg leading-8 text-ink/68">
-        {company.description}
-      </p>
-      <p class="mt-4 text-base font-semibold text-ink">{company.legalNameZh}</p>
-      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-        <ButtonLink href="#solutions">了解解决方案</ButtonLink>
-        <ButtonLink href="/products/friday" variant="secondary">查看产品</ButtonLink>
+<Layout title={`${company.name} - ${company.tagline}`} description={company.description} canonicalPath="/" theme="company">
+  <!-- Hero -->
+  <section class="mesh-bg aurora">
+    <div class="section-shell grid min-h-[calc(100vh-64px)] items-center gap-14 py-20 lg:grid-cols-[1.05fr_0.95fr]">
+      <div class="rise">
+        <p class="font-mono text-xs uppercase tracking-[0.32em] text-accent">{company.legalNameEn}</p>
+        <h1 class="mt-7 font-display font-semibold text-content display-xl">
+          做能真正<br />用起来的 <span class="glow-text">AI</span>。
+        </h1>
+        <p class="mt-8 max-w-xl text-lg leading-8 text-muted">
+          我们做产品，也帮企业把 AI 真正用进日常业务里。<br class="hidden sm:block" />不停在演示，而是做成每天都离不开的工具。
+        </p>
+        <div class="mt-10 flex flex-col gap-3 sm:flex-row">
+          <ButtonLink href="#products">看看我们的产品</ButtonLink>
+          <ButtonLink href="#services" variant="secondary">我有个项目想聊</ButtonLink>
+        </div>
+        <p class="mt-8 text-sm text-faint">{company.legalNameZh}</p>
       </div>
-    </div>
-    <div class="rounded-3xl border border-ink/10 bg-white p-6 shadow-soft">
-      <div class="rounded-2xl bg-ink p-6 text-white">
-        <p class="text-sm font-semibold uppercase tracking-wider text-moss">AI implementation stack</p>
-        <h2 class="mt-3 text-3xl font-semibold">从模型能力到业务结果</h2>
-        <p class="mt-4 text-sm leading-6 text-white/68">硅途数智把大模型、算法、数据工程和产品体验组合成可交付的行业方案。</p>
-      </div>
-      <div class="mt-5 grid gap-4 sm:grid-cols-2">
-        {["LLM Apps", "Algorithm R&D", "Data Workflow", "Product Delivery"].map((item) => (
-          <div class="rounded-xl border border-ink/10 bg-cloud p-4">
-            <p class="text-sm font-semibold text-ink">{item}</p>
-            <div class="mt-4 h-2 rounded-full bg-mint">
-              <div class="h-2 w-2/3 rounded-full bg-moss"></div>
+
+      <!-- WordeX 文档预览 -->
+      <div class="rise glow-ring rounded-theme-lg border border-line bg-surface p-5 backdrop-blur-sm sm:p-6" style="animation-delay:0.12s">
+        <div class="flex items-center justify-between border-b border-line pb-4">
+          <div class="flex items-center gap-2">
+            <span class="h-3 w-3 rounded-full bg-red-400"></span>
+            <span class="h-3 w-3 rounded-full bg-accent-2"></span>
+            <span class="h-3 w-3 rounded-full bg-accent"></span>
+          </div>
+          <span class="font-mono text-xs text-faint">WordeX · 一键成稿</span>
+        </div>
+
+        <div class="mt-5">
+          <p class="text-xs font-semibold text-faint">你只管写内容</p>
+          <div class="mt-2 rounded-theme bg-surface-strong p-4 font-mono text-sm leading-7 text-muted">
+            <p><span class="text-accent">\include</span>{"{@builtin/tech.report.basic}"}</p>
+            <p><span class="text-accent">\title</span>{"{技术报告模板使用说明}"}</p>
+            <p><span class="text-accent">\section</span>{"{套用模板}"}</p>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <p class="text-xs font-semibold text-faint">模板负责排版，一键生成</p>
+          <div class="mt-2 rounded-theme border border-line-strong bg-accent-soft p-4">
+            <div class="flex items-start gap-3">
+              <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-contrast">✓</span>
+              <div>
+                <p class="font-semibold text-content">技术报告.docx</p>
+                <p class="mt-1 text-sm text-accent">排版规范 · Word 里可继续编辑</p>
+              </div>
             </div>
           </div>
-        ))}
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="solutions" class="section-shell py-20">
-    <SectionHeading eyebrow="Solutions" title="全链路 AI 技术服务与产品落地支持" text="从业务场景、算法研发到系统上线，帮助企业把 AI 能力真正嵌入业务流程。" />
-    <div class="mt-10 grid gap-5 md:grid-cols-2">
-      {capabilities.map((item) => (
-        <article class="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
-          <h2 class="text-2xl font-semibold text-ink">{item.title}</h2>
-          <p class="mt-3 text-sm leading-6 text-ink/64">{item.text}</p>
+  <!-- 产品 -->
+  <section id="products" class="border-t border-line bg-elev py-24">
+    <div class="section-shell">
+      <div class="reveal">
+        <SectionHeading
+          eyebrow="我们的产品"
+          title="把麻烦事，做成顺手的工具"
+          text="从我们自己真实的需求里长出来——先解决自己的麻烦，再分享给同样需要的你。"
+        />
+      </div>
+      <div class="mt-14">
+        <article class="reveal flex flex-col rounded-theme-lg border border-line bg-surface p-8 transition hover:border-accent lg:p-10">
+          <div class="flex items-center gap-3">
+            <span class="rounded-full bg-surface-strong px-3 py-1 text-xs font-semibold text-muted">{wordex.status}</span>
+            <span class="text-xs text-faint">在线文档工具</span>
+          </div>
+          <h3 class="mt-6 font-display text-4xl font-semibold text-content">{wordex.name}</h3>
+          <p class="mt-2 text-lg font-semibold text-accent">{wordex.tagline}</p>
+          <p class="mt-4 max-w-2xl text-base leading-8 text-muted">
+            技术报告、期刊论文、公文——这类讲究格式的文档，最烦的就是反复排版。WordeX 让你和 AI 一起专心写内容，排版交给模板，规范的 Word 一键生成。
+          </p>
+          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+            <ButtonLink href="/products/wordex">认识 WordeX</ButtonLink>
+            <ButtonLink href="/wordex" variant="secondary">查看在线入口</ButtonLink>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 服务 -->
+  <section id="services" class="section-shell py-24">
+    <div class="reveal mx-auto max-w-3xl text-center">
+      <p class="text-xs font-semibold uppercase tracking-[0.16em] text-accent">也帮你做</p>
+      <h2 class="mt-3 font-display text-3xl font-semibold tracking-tight text-content md:text-5xl">
+        你有一个想用 AI 解决的问题？<br />我们一起把它做出来。
+      </h2>
+      <p class="mt-5 text-base leading-8 text-muted">
+        做产品攒下的本事，也能用在你的业务上。不卖概念，从一个具体、能验证的场景开始。
+      </p>
+    </div>
+    <div class="mt-14 grid gap-5 md:grid-cols-3">
+      {serviceExamples.map((item, index) => (
+        <article class="reveal group rounded-theme-lg border border-line bg-surface p-7 transition hover:border-accent" style={`--reveal-delay:${index * 0.08}s`}>
+          <span class="font-mono text-sm text-accent">0{index + 1}</span>
+          <h3 class="mt-4 font-display text-xl font-semibold text-content">{item.title}</h3>
+          <p class="mt-3 text-sm leading-7 text-muted">{item.text}</p>
         </article>
       ))}
     </div>
   </section>
 
-  <section class="bg-white py-20">
-    <div class="section-shell grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
-      <div>
-        <p class="text-sm font-semibold uppercase tracking-wider text-leaf">Industries</p>
-        <h2 class="mt-3 text-3xl font-semibold text-ink md:text-4xl">面向多行业的 AI 数智化升级</h2>
-        <p class="mt-4 text-sm leading-6 text-ink/64">我们优先选择能快速验证 ROI、沉淀数据资产、复用技术能力的场景，与企业共同完成从试点到规模化落地。</p>
-      </div>
-      <div class="grid gap-3 sm:grid-cols-3">
-        {industries.map((item) => (
-          <div class="rounded-xl border border-ink/10 bg-cloud p-4 text-center text-sm font-semibold text-ink/72">{item}</div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="section-shell py-20">
-    <SectionHeading eyebrow="Products" title="产品矩阵" text="围绕个人工作流和正式文档生产，硅途数智正在把 AI 能力沉淀为可持续迭代的产品。" />
-    <div class="mt-10 grid gap-6 lg:grid-cols-2">
-      <article class="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
-        <ProductMockup compact />
-        <span class="mt-6 inline-flex rounded-full bg-mint px-3 py-1 text-xs font-semibold text-leaf">Available</span>
-        <h2 class="mt-5 text-3xl font-semibold text-ink">{friday.name}</h2>
-        <p class="mt-3 text-sm font-semibold text-leaf">{friday.fullName}</p>
-        <p class="mt-4 text-sm leading-6 text-ink/64">{friday.description}</p>
-        <div class="mt-6 flex flex-col gap-3 sm:flex-row">
-          <ButtonLink href="/products/friday">查看产品页</ButtonLink>
-          <ButtonLink href="/download" variant="secondary">下载 Windows 版</ButtonLink>
-        </div>
-      </article>
-
-      <article class="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
-        <div class="product-screen relative overflow-hidden rounded-2xl border border-ink/10 p-4 shadow-soft" aria-label="WordeX product preview">
-          <div class="flex items-center justify-between border-b border-ink/10 pb-4">
-            <div class="flex items-center gap-2">
-              <span class="h-3 w-3 rounded-full bg-red-400"></span>
-              <span class="h-3 w-3 rounded-full bg-ember"></span>
-              <span class="h-3 w-3 rounded-full bg-moss"></span>
-            </div>
-            <span class="rounded-full bg-mint px-3 py-1 text-xs font-semibold text-leaf">WordeX</span>
-          </div>
-          <div class="grid gap-4 pt-5 md:grid-cols-[0.78fr_1.22fr]">
-            <aside class="rounded-xl bg-ink p-4 text-white">
-              <p class="text-sm font-semibold">workspace</p>
-              <div class="mt-5 space-y-2">
-                {["main.wex", "templates", "assets"].map((item, index) => (
-                  <div class={`rounded-lg px-3 py-2 text-sm ${index === 0 ? "bg-white text-ink" : "bg-white/8 text-white/76"}`}>{item}</div>
-                ))}
-              </div>
-            </aside>
-            <section class="space-y-4">
-              <div class="rounded-xl border border-ink/10 bg-white p-4">
-                <p class="text-xs font-semibold uppercase tracking-wider text-leaf">Compile</p>
-                <h3 class="mt-1 text-xl font-semibold text-ink">.wex -> .docx</h3>
-                <p class="mt-3 text-sm leading-6 text-ink/60">语义源文件、模板包和 Word 输出链路。</p>
-              </div>
-              <div class="grid gap-3 sm:grid-cols-2">
-                {["公式图表", "模板提取"].map((item) => (
-                  <div class="rounded-xl border border-ink/10 bg-white p-4 text-sm font-semibold text-ink/72">{item}</div>
-                ))}
-              </div>
-            </section>
-          </div>
-        </div>
-        <span class="mt-6 inline-flex rounded-full bg-cloud px-3 py-1 text-xs font-semibold text-ink/60">Coming soon</span>
-        <h2 class="mt-5 text-3xl font-semibold text-ink">{wordex.name}</h2>
-        <p class="mt-3 text-sm font-semibold text-leaf">{wordex.fullName}</p>
-        <p class="mt-4 text-sm leading-6 text-ink/64">{wordex.description}</p>
-        <div class="mt-6 flex flex-col gap-3 sm:flex-row">
-          <ButtonLink href="/products/wordex">查看产品页</ButtonLink>
-          <ButtonLink href="/wordex" variant="secondary">打开预留入口</ButtonLink>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <FridayExperience />
-
-  <section class="bg-ink py-20 text-white">
-    <div class="section-shell grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-      <div>
-        <p class="text-sm font-semibold uppercase tracking-wider text-moss">Delivery process</p>
-        <h2 class="mt-3 text-3xl font-semibold md:text-4xl">用工程化方式交付 AI</h2>
-        <p class="mt-4 text-sm leading-6 text-white/68">硅途数智关注模型效果，也关注权限、数据、安全、成本和持续迭代。</p>
+  <!-- 怎么合作 -->
+  <section class="border-y border-line bg-elev py-24">
+    <div class="section-shell grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+      <div class="reveal">
+        <p class="font-mono text-xs uppercase tracking-[0.16em] text-accent">我们怎么合作</p>
+        <h2 class="mt-3 font-display text-3xl font-semibold text-content md:text-4xl">慢一点开始，稳一点交付</h2>
+        <p class="mt-4 text-sm leading-7 text-muted">
+          我们不追求一上来就铺很大。先把一件事做对、做扎实，让你看到 AI 真的能省时间、能放心长期用。
+        </p>
       </div>
       <div class="grid gap-4">
-        {process.map((item, index) => (
-          <div class="flex gap-4 rounded-xl border border-white/10 bg-white/8 p-4">
-            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-moss text-sm font-semibold text-ink">{index + 1}</span>
-            <p class="pt-1 text-sm leading-6 text-white/76">{item}</p>
+        {process.map(([title, text], index) => (
+          <div class="reveal flex gap-5 rounded-theme border border-line bg-surface p-5" style={`--reveal-delay:${index * 0.06}s`}>
+            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-theme bg-accent font-mono text-sm font-semibold text-accent-contrast">{index + 1}</span>
+            <div>
+              <h3 class="font-display text-lg font-semibold text-content">{title}</h3>
+              <p class="mt-1 text-sm leading-6 text-muted">{text}</p>
+            </div>
           </div>
         ))}
       </div>
     </div>
   </section>
 
+  <!-- 行业 -->
   <section class="section-shell py-20">
-    <div class="rounded-3xl border border-ink/10 bg-white p-8 text-center shadow-soft md:p-10">
-      <p class="text-sm font-semibold uppercase tracking-wider text-leaf">Contact</p>
-      <h2 class="mt-3 text-3xl font-semibold text-ink md:text-4xl">让 AI 落到真实业务里</h2>
-      <p class="mx-auto mt-4 max-w-2xl text-sm leading-6 text-ink/64">如果你正在评估大模型应用、智能算法或企业数字化转型项目，可以从一个明确场景开始验证。</p>
-      <div class="mt-8">
-        <ButtonLink href={`mailto:${company.contactEmail}`}>联系 Siliward</ButtonLink>
+    <div class="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+      <div class="reveal">
+        <p class="font-mono text-xs uppercase tracking-[0.16em] text-accent">服务过的领域</p>
+        <h2 class="mt-3 font-display text-3xl font-semibold text-content md:text-4xl">不同的行业，同一个出发点</h2>
+        <p class="mt-4 text-sm leading-7 text-muted">不管你在哪个行业，我们都从"哪件事最值得先用 AI"聊起，陪你从小试点走到日常用。</p>
+      </div>
+      <div class="grid gap-3 sm:grid-cols-3">
+        {industries.map((item, index) => (
+          <div class="reveal rounded-theme border border-line bg-surface p-4 text-center text-sm font-semibold text-muted" style={`--reveal-delay:${index * 0.05}s`}>{item}</div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 联系 -->
+  <section class="section-shell py-24">
+    <div class="reveal mesh-bg aurora overflow-hidden rounded-theme-lg border border-line-strong bg-surface p-10 text-center md:p-16">
+      <p class="font-mono text-xs uppercase tracking-[0.16em] text-accent">说句话，我们就开始</p>
+      <h2 class="mt-4 font-display font-semibold text-content display-xl">把想法，<span class="glow-text">变成能用的东西</span>。</h2>
+      <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-muted">
+        无论你是在等 WordeX，还是有个 AI 项目想找人做——发封邮件，我们聊聊。
+      </p>
+      <div class="mt-10 flex justify-center">
+        <ButtonLink href={`mailto:${company.contactEmail}`}>给我们写信</ButtonLink>
       </div>
     </div>
   </section>

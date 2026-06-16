@@ -4,6 +4,7 @@ import ButtonLink from "../../components/ButtonLink.astro";
 import SectionHeading from "../../components/SectionHeading.astro";
 import FaqList from "../../components/FaqList.astro";
 import wordex from "../../data/products/wordex.json";
+import { company } from "../../data/company";
 
 const softwareSchema = {
   "@context": "https://schema.org",
@@ -15,140 +16,338 @@ const softwareSchema = {
 };
 
 const workflow = [
-  ["编写", "用 .wex 描述标题、章节、公式、图表、引用和模板字段。"],
-  ["校验", "在编辑器中查看语法提示、依赖关系和项目文件。"],
-  ["编译", "按模板包把语义文档渲染为 Word .docx。"],
-  ["修订", "围绕源文件和模板包迭代内容、样式和交付格式。"]
+  ["写", "把标题、章节、图表、公式和引用写清楚，专注内容本身。"],
+  ["看", "随时检查结构和素材，确认没有遗漏。"],
+  ["生成", "按选定的模板，一键导出排版规范的 Word 文档。"],
+  ["复用", "同一套内容和模板，反复用在不同稿件上。"]
+];
+
+// 订阅方案：列 = 个人版各档，行 = 能力
+const pricingTiers = [
+  { name: "免费版", en: "Free", price: "¥0", unit: "", note: "先上手，长期免费", featured: false },
+  { name: "体验版", en: "Trial", price: "首周免费", unit: "", note: "注册即享 · 体验完整能力", featured: false },
+  { name: "高级版", en: "Premium", price: "¥39", unit: "/ 月", note: "面向常态创作", featured: true },
+  { name: "专业版", en: "Pro", price: "¥79", unit: "/ 月", note: "面向重度专业用户", featured: false }
+];
+
+const pricingGroups = [
+  {
+    group: "文档与编译",
+    rows: [
+      { label: ".wex 编辑与实时预览", values: ["✓", "✓", "✓", "✓"] },
+      { label: "编译导出标准 Word", values: ["基础额度", "首周不限", "不限次", "不限次"] },
+      { label: "项目数量", values: ["最多 3 个", "不限", "不限", "不限"] },
+      { label: "云存储空间", values: ["1 GB", "10 GB", "20 GB", "50 GB"] }
+    ]
+  },
+  {
+    group: "AI 与 Agent",
+    rows: [
+      { label: "智能补全与语法检查", values: ["基础 · 低额度", "高额度", "高额度", "最高额度"] },
+      { label: "平台 Agent 月度额度", values: ["—", "首周体验额度", "含月度额度", "更高额度"] },
+      { label: "更高质量模型", values: ["—", "✓", "✓", "✓"] },
+      { label: "更高并发 · 更长上下文", values: ["—", "✓", "✓", "✓ · 优先"] },
+      { label: "自带 API Key（只收功能费）", values: ["—", "✓", "✓", "✓"] }
+    ]
+  },
+  {
+    group: "版本管理",
+    rows: [
+      { label: "版本历史", values: ["短期保留", "完整历史", "完整历史", "完整历史"] },
+      { label: "命名快照", values: ["—", "✓", "✓", "✓"] },
+      { label: "版本恢复", values: ["—", "✓", "✓", "✓"] },
+      { label: "差异对比", values: ["—", "即将推出", "即将推出", "即将推出"] }
+    ]
+  },
+  {
+    group: "协作",
+    rows: [
+      { label: "共享与协作", values: ["极少量", "体验", "按需共享", "更多席位"] },
+      { label: "共享模板库", values: ["—", "体验", "✓", "✓"] }
+    ]
+  }
+];
+
+// 团队：不是单独套餐，而是批量统一采购个人版，享更低平均单价
+const teamBenefits = [
+  ["统一采购、统一开票", "为整个课题组或团队一次性购买多份高级版 / 专业版，一张发票、一处管理。"],
+  ["管理后台", "在组织后台集中分配席位、查看用量，人员变动随时调整。"],
+  ["共享模板库", "把团队沉淀的模板统一放进共享库，新成员开箱即用、风格一致。"]
+];
+
+// 批量采购的平均单价示意（人数越多越便宜）
+const teamPricing = [
+  { seats: "5 人起", premium: "¥34", pro: "¥69", save: "约省 13%" },
+  { seats: "10 人起", premium: "¥29", pro: "¥59", save: "约省 25%" },
+  { seats: "30 人起", premium: "¥25", pro: "¥49", save: "约省 36%" }
+];
+
+const addOns = [
+  ["模板单买", "看中某个高级模板，单独买下就行，不必为它升级整档套餐。"],
+  ["Agent 加油包", "额度不够用？随时加购额外的 Agent 额度，用多少买多少。"],
+  ["云存储扩容", "项目和素材越攒越多，单独扩容存储空间，按需增加。"]
 ];
 ---
 
-<Layout title={`${wordex.name} - ${wordex.tagline}`} description={wordex.description} canonicalPath="/products/wordex">
+<Layout title={`${wordex.name} - ${wordex.tagline}`} description={wordex.description} canonicalPath="/products/wordex" theme="wordex">
   <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(softwareSchema)} />
 
-  <section class="section-shell grid min-h-[calc(100vh-64px)] items-center gap-12 py-14 lg:grid-cols-[0.92fr_1.08fr]">
-    <div>
-      <p class="text-sm font-semibold uppercase tracking-wider text-leaf">WordeX Editor</p>
-      <h1 class="mt-4 max-w-3xl text-5xl font-semibold tracking-normal text-ink md:text-6xl">
-        {wordex.tagline}
-      </h1>
-      <p class="mt-6 max-w-2xl text-lg leading-8 text-ink/68">{wordex.description}</p>
-      <p class="mt-3 text-sm font-semibold text-leaf">{wordex.platform}</p>
-      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-        <ButtonLink href={wordex.reservedPath}>打开 WordeX</ButtonLink>
-        <ButtonLink href="/wordex/docs" variant="secondary">说明文档</ButtonLink>
-      </div>
-      <div class="mt-5 grid max-w-xl gap-3 sm:grid-cols-3">
-        {[
-          ["Source", ".wex"],
-          ["Output", ".docx"],
-          ["Status", "Coming soon"]
-        ].map(([label, value]) => (
-          <div class="rounded-lg border border-ink/10 bg-white/76 p-3">
-            <p class="text-xs font-semibold uppercase tracking-wider text-ink/40">{label}</p>
-            <p class="mt-1 break-words text-sm font-semibold text-ink">{value}</p>
-          </div>
-        ))}
-      </div>
+  <!-- Hero：编辑部风 -->
+  <section class="section-shell py-16">
+    <div class="editorial-rule pt-6">
+      <p class="editorial-kicker text-xs text-accent">WordeX · 中文正式文档</p>
     </div>
-
-    <div class="relative overflow-hidden rounded-lg border border-ink/10 bg-white p-5 shadow-soft">
-      <div class="flex items-center justify-between border-b border-ink/10 pb-4">
-        <div class="flex items-center gap-2">
-          <span class="h-3 w-3 rounded-full bg-red-400"></span>
-          <span class="h-3 w-3 rounded-full bg-ember"></span>
-          <span class="h-3 w-3 rounded-full bg-moss"></span>
+    <div class="mt-8 grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+      <div class="rise">
+        <h1 class="font-display text-5xl font-semibold leading-[1.12] tracking-tight text-content md:text-6xl">
+          {wordex.tagline}
+        </h1>
+        <p class="mt-7 max-w-2xl text-lg leading-8 text-muted">{wordex.description}</p>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <ButtonLink href={wordex.reservedPath}>打开 WordeX</ButtonLink>
+          <ButtonLink href="/wordex/docs" variant="secondary">查看写法说明</ButtonLink>
         </div>
-        <span class="rounded-full bg-mint px-3 py-1 text-xs font-semibold text-leaf">WEX Workspace</span>
+        <div class="mt-8 grid max-w-xl gap-3 sm:grid-cols-3">
+          {[
+            ["专注", "写内容"],
+            ["输出", "Word 文档"],
+            ["状态", wordex.status]
+          ].map(([label, value]) => (
+            <div class="border-l-2 border-line-strong pl-4">
+              <p class="editorial-kicker text-xs text-faint">{label}</p>
+              <p class="mt-1 font-display text-lg font-semibold text-content">{value}</p>
+            </div>
+          ))}
+        </div>
       </div>
-      <div class="grid min-h-[520px] gap-4 pt-5 lg:grid-cols-[0.72fr_1.28fr]">
-        <aside class="rounded-lg bg-ink p-4 text-white">
-          <p class="text-sm font-semibold">tech-report</p>
-          <div class="mt-5 space-y-2">
-            {["main.wex", "templates", "assets", "dist"].map((item, index) => (
-              <div class={`rounded-lg px-3 py-2 text-sm ${index === 0 ? "bg-white text-ink" : "bg-white/8 text-white/76"}`}>{item}</div>
-            ))}
+
+      <div class="rise border border-line bg-surface p-8 shadow-soft" style="animation-delay:0.1s">
+        <div class="border-b border-line pb-4">
+          <p class="editorial-kicker text-xs text-faint">预览 · 技术报告模板</p>
+        </div>
+        <div class="mt-6 space-y-4 font-display">
+          <p class="text-center font-display text-2xl font-semibold text-content">技术报告模板使用说明</p>
+          <p class="text-center text-sm text-muted">WordeX 内置模板 · tech.report.basic</p>
+          <div class="editorial-rule pt-4">
+            <p class="font-display text-lg font-semibold text-content">一、套用模板</p>
+            <p class="mt-3 leading-8 text-muted">在文首引入 <span class="italic">tech.report.basic</span>，填好标题、单位和日期，正文按章节书写即可，版式由模板统一接管。</p>
           </div>
-        </aside>
-        <section class="grid gap-4">
-          <div class="rounded-lg border border-ink/10 bg-cloud p-4 font-mono text-sm leading-7 text-ink/76">
-            <p><span class="text-leaf">\include</span>{"{@builtin/tech.report.basic}"}</p>
-            <p><span class="text-leaf">\title</span>{"{电磁兼容测试技术报告}"}</p>
-            <p><span class="text-leaf">\section</span>{"{测试概述}"}</p>
-            <p>场强计算公式为 <span class="text-leaf">$E = V / d$</span>。</p>
-            <p><span class="text-leaf">\figure</span>{"{assets/setup.png}[caption=测试布置]"}</p>
-          </div>
-          <div class="grid gap-4 sm:grid-cols-2">
-            <div class="rounded-lg border border-ink/10 bg-white p-4">
-              <p class="text-sm font-semibold text-ink">Template</p>
-              <p class="mt-2 text-sm leading-6 text-ink/60">tech.report.basic</p>
-            </div>
-            <div class="rounded-lg border border-ink/10 bg-white p-4">
-              <p class="text-sm font-semibold text-ink">Compile</p>
-              <p class="mt-2 text-sm leading-6 text-ink/60">main.wex -> report.docx</p>
-            </div>
-          </div>
-        </section>
+          <div class="mt-4 grid place-items-center border border-dashed border-line py-10 text-sm text-faint">[ 图 1 · 模板章节结构示意 ]</div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="bg-white py-20">
+  <!-- 工作流 -->
+  <section class="border-y border-line bg-elev py-20">
     <div class="section-shell">
-      <SectionHeading eyebrow="Workflow" title="把正式文档变成可维护的源文件和模板" text="WordeX 关注内容语义、模板约束和 Word 输出之间的稳定转换，让人和 AI 都能围绕同一份结构化文档协作。" />
-      <div class="mt-10 grid gap-4 md:grid-cols-4">
+      <div class="reveal">
+        <SectionHeading eyebrow="怎么用" title="你写内容，模板管版式" text="“写什么”和“怎么排”彻底分开——你只盯着内容，格式由模板兜住，你和 AI 围着同一份稿子改，谁都不踩谁的脚。" />
+      </div>
+      <div class="mt-12 grid gap-4 md:grid-cols-4">
         {workflow.map(([title, text], index) => (
-          <article class="rounded-lg border border-ink/10 bg-cloud p-5">
-            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-leaf text-sm font-semibold text-white">{index + 1}</span>
-            <h2 class="mt-5 text-xl font-semibold text-ink">{title}</h2>
-            <p class="mt-3 text-sm leading-6 text-ink/64">{text}</p>
+          <article class="reveal border-t-2 border-line-strong bg-surface p-6" style={`--reveal-delay:${index * 0.08}s`}>
+            <span class="editorial-kicker text-sm text-accent">0{index + 1}</span>
+            <h2 class="mt-4 font-display text-xl font-semibold text-content">{title}</h2>
+            <p class="mt-3 text-sm leading-7 text-muted">{text}</p>
           </article>
         ))}
       </div>
     </div>
   </section>
 
+  <!-- 能力 -->
   <section id="features" class="section-shell py-20">
-    <SectionHeading eyebrow="Capabilities" title="覆盖从语义写作到 DOCX 输出的关键环节" text="当前能力来自 WordeX 编辑器和编译器仓库，官网先展示产品方向，并预留在线编辑器入口。" />
-    <div class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-      {wordex.features.map((feature) => (
-        <article class="rounded-lg border border-ink/10 bg-white p-5 shadow-sm">
-          <h2 class="text-lg font-semibold text-ink">{feature.title}</h2>
-          <p class="mt-3 text-sm leading-6 text-ink/64">{feature.text}</p>
+    <div class="reveal">
+      <SectionHeading eyebrow="它替你省了什么" title="从动笔到成稿，烦人的都包了" text="WordeX 正在内部测试中，先在这里展示产品方向与核心能力。" />
+    </div>
+    <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {wordex.features.map((feature, index) => (
+        <article class="reveal border border-line bg-surface p-6" style={`--reveal-delay:${(index % 3) * 0.08}s`}>
+          <h2 class="font-display text-lg font-semibold text-content">{feature.title}</h2>
+          <p class="mt-3 text-sm leading-7 text-muted">{feature.text}</p>
         </article>
       ))}
     </div>
   </section>
 
-  <section class="bg-white py-20">
+  <!-- 订阅方案 -->
+  <section id="pricing" class="section-shell py-20">
+    <div class="reveal">
+      <SectionHeading eyebrow="订阅方案" title="按你的产出规模来选" text="卖的不是聊天次数，而是正式文档的产出效率、稳定编译、Agent 辅助，以及版本与协作管理。" />
+    </div>
+
+    <!-- 桌面：对比表 -->
+    <div class="reveal mt-12 hidden overflow-hidden border border-line-strong md:block">
+      <table class="w-full border-collapse text-left">
+        <thead>
+          <tr>
+            <th class="w-[22%] border-b border-line bg-surface p-4 align-bottom">
+              <p class="editorial-kicker text-xs text-faint">能力</p>
+            </th>
+            {pricingTiers.map((tier) => (
+              <th class={`border-b border-line p-4 align-bottom ${tier.featured ? "bg-accent-soft" : "bg-surface"}`}>
+                <p class="editorial-kicker text-xs text-accent">{tier.en}{tier.featured ? " · 推荐" : ""}</p>
+                <p class="mt-2 font-display text-lg font-semibold text-content">{tier.name}</p>
+                <p class="mt-2"><span class="font-display text-xl font-semibold text-content">{tier.price}</span><span class="text-sm text-muted">{tier.unit}</span></p>
+                <p class="mt-1 text-xs text-faint">{tier.note}</p>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {pricingGroups.map((section) => (
+            <>
+              <tr>
+                <th colspan="5" class="border-t border-line bg-elev px-4 py-3 text-left">
+                  <span class="editorial-kicker text-xs text-accent">{section.group}</span>
+                </th>
+              </tr>
+              {section.rows.map((row) => (
+                <tr class="border-t border-line">
+                  <td class="p-4 text-sm font-medium text-content">{row.label}</td>
+                  {row.values.map((value, i) => (
+                    <td class={`p-4 text-sm ${pricingTiers[i].featured ? "bg-accent-soft" : ""} ${value === "✓" ? "text-accent" : value === "—" ? "text-faint" : "text-muted"}`}>
+                      {value === "✓" ? <span class="font-semibold">✓</span> : value}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 移动端：分卡片 -->
+    <div class="reveal mt-10 grid gap-5 md:hidden">
+      {pricingTiers.map((tier, ti) => (
+        <article class={`border p-6 ${tier.featured ? "border-accent-soft border-l-4 border-l-accent bg-accent-soft" : "border-line bg-surface"}`}>
+          <p class="editorial-kicker text-xs text-accent">{tier.en}{tier.featured ? " · 推荐" : ""}</p>
+          <div class="mt-2 flex items-baseline justify-between">
+            <p class="font-display text-xl font-semibold text-content">{tier.name}</p>
+            <p><span class="font-display text-2xl font-semibold text-content">{tier.price}</span><span class="text-sm text-muted">{tier.unit}</span></p>
+          </div>
+          <p class="mt-1 text-xs text-faint">{tier.note}</p>
+          <div class="mt-5 space-y-4">
+            {pricingGroups.map((section) => (
+              <div>
+                <p class="editorial-kicker text-xs text-accent">{section.group}</p>
+                <ul class="mt-2 space-y-1.5">
+                  {section.rows.map((row) => (
+                    <li class="flex justify-between gap-4 text-sm">
+                      <span class="text-muted">{row.label}</span>
+                      <span class={`shrink-0 text-right font-medium ${row.values[ti] === "—" ? "text-faint" : "text-content"}`}>{row.values[ti]}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <!-- 单项增购 -->
+    <div class="reveal mt-12">
+      <p class="editorial-kicker text-xs text-accent">单项增购</p>
+      <h3 class="mt-3 font-display text-2xl font-semibold text-content">需要的时候，单独加购就好</h3>
+      <p class="mt-3 max-w-2xl text-sm leading-7 text-muted">不必为某个功能升级整档套餐——按需购买，用多少买多少。</p>
+      <div class="mt-6 grid gap-5 md:grid-cols-3">
+        {addOns.map(([title, text], index) => (
+          <article class="border-l-2 border-accent bg-surface p-5" style={`--reveal-delay:${index * 0.06}s`}>
+            <h4 class="font-display text-lg font-semibold text-content">{title}</h4>
+            <p class="mt-2 text-sm leading-7 text-muted">{text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+
+    <!-- 团队：批量采购个人版 -->
+    <div class="reveal mt-16 border-t-2 border-line-strong pt-12">
+      <p class="editorial-kicker text-xs text-accent">团队与课题组</p>
+      <h3 class="mt-3 font-display text-2xl font-semibold text-content md:text-3xl">人多一起买，平均更便宜</h3>
+      <p class="mt-3 max-w-2xl text-sm leading-7 text-muted">团队版不是另一套功能，而是为课题组、团队统一采购多份高级版 / 专业版——席位越多，平均单价越低，统一管理、统一开票。</p>
+
+      <div class="mt-8 grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+        <!-- 阶梯单价 -->
+        <div class="overflow-hidden border border-line-strong">
+          <table class="w-full border-collapse text-left">
+            <thead>
+              <tr class="bg-elev">
+                <th class="border-b border-line p-4"><span class="editorial-kicker text-xs text-accent">采购规模</span></th>
+                <th class="border-b border-line p-4"><span class="editorial-kicker text-xs text-accent">高级版 / 人·月</span></th>
+                <th class="border-b border-line p-4"><span class="editorial-kicker text-xs text-accent">专业版 / 人·月</span></th>
+                <th class="border-b border-line p-4 text-right"><span class="editorial-kicker text-xs text-accent">较单买</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              {teamPricing.map((row) => (
+                <tr class="border-t border-line">
+                  <td class="p-4 text-sm font-medium text-content">{row.seats}</td>
+                  <td class="p-4 font-display text-base font-semibold text-content">{row.premium}</td>
+                  <td class="p-4 font-display text-base font-semibold text-content">{row.pro}</td>
+                  <td class="p-4 text-right text-sm font-semibold text-accent">{row.save}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 团队能力 -->
+        <div class="grid gap-3">
+          {teamBenefits.map(([title, text], index) => (
+            <article class="border-l-2 border-accent bg-surface p-4" style={`--reveal-delay:${index * 0.06}s`}>
+              <h4 class="font-display text-base font-semibold text-content">{title}</h4>
+              <p class="mt-1 text-sm leading-6 text-muted">{text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <div class="mt-8">
+        <ButtonLink href={`mailto:${company.contactEmail}?subject=WordeX 团队采购咨询`}>团队采购咨询</ButtonLink>
+      </div>
+    </div>
+
+    <p class="reveal mt-10 text-xs leading-6 text-faint">价格与额度为上线前的方案示意，最终以正式发布为准。体验版于注册后首周免费体验完整能力，到期自动转为免费版。自带 API Key 时不消耗平台模型额度，仅收取平台功能费，但仍受套餐能力与平台治理限制。</p>
+  </section>
+
+  <!-- 适用场景 -->
+  <section class="border-y border-line bg-elev py-20">
     <div class="section-shell grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-      <div>
-        <p class="text-sm font-semibold uppercase tracking-wider text-leaf">Use cases</p>
-        <h2 class="mt-3 text-3xl font-semibold text-ink md:text-4xl">优先服务高格式要求的中文正式文档</h2>
-        <p class="mt-4 text-sm leading-6 text-ink/64">当文档需要反复生成、套用模板、保留公式图表编号，或由 AI 参与起草时，语义源文件比直接修改 Word 更容易维护。</p>
+      <div class="reveal">
+        <p class="editorial-kicker text-xs text-accent">适合谁用</p>
+        <h2 class="mt-3 font-display text-3xl font-semibold text-content md:text-4xl">越是讲究格式，越用得上</h2>
+        <p class="mt-4 text-sm leading-7 text-muted">一类文档要反复产出、套统一模板、保住公式图表编号，或者你想让 AI 一起起草——这时候，WordeX 比直接改 Word 省心得多，也更靠谱。</p>
       </div>
       <div class="grid gap-3 sm:grid-cols-2">
-        {wordex.useCases.map((item) => (
-          <div class="rounded-lg border border-ink/10 bg-cloud p-4 text-sm font-semibold leading-6 text-ink/72">{item}</div>
+        {wordex.useCases.map((item, index) => (
+          <div class="reveal border-l-2 border-accent bg-surface p-4 text-sm font-semibold leading-6 text-content" style={`--reveal-delay:${index * 0.06}s`}>{item}</div>
         ))}
       </div>
     </div>
   </section>
 
+  <!-- 预留入口 -->
   <section class="section-shell py-20">
-    <div class="rounded-lg border border-leaf/20 bg-mint p-8 text-center md:p-10">
-      <p class="text-sm font-semibold uppercase tracking-wider text-leaf">Reserved path</p>
-      <h2 class="mt-3 text-3xl font-semibold text-ink md:text-4xl">在线编辑器入口已预留</h2>
-      <p class="mx-auto mt-4 max-w-2xl text-sm leading-6 text-ink/64">正式部署完成后，WordeX 在线编辑器会在 /wordex 开放。当前产品页不暴露私有仓库地址。</p>
-      <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-        <ButtonLink href={wordex.reservedPath}>前往 /wordex</ButtonLink>
-        <ButtonLink href="/#solutions" variant="secondary">了解公司服务</ButtonLink>
+    <div class="reveal border border-line-strong bg-surface p-10 text-center md:p-14">
+      <p class="editorial-kicker text-xs text-accent">敬请期待</p>
+      <h2 class="mt-3 font-display text-3xl font-semibold text-content md:text-4xl">在线编辑器，马上就来</h2>
+      <p class="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted">正式开放后，你就能在这里建文档、在线写，然后一键生成规范的 Word。</p>
+      <div class="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
+        <ButtonLink href={wordex.reservedPath}>查看在线入口</ButtonLink>
+        <ButtonLink href="/#services" variant="secondary">了解公司服务</ButtonLink>
       </div>
     </div>
   </section>
 
+  <!-- FAQ -->
   <section class="section-shell py-20">
-    <SectionHeading eyebrow="FAQ" title="上线前常见问题" />
-    <div class="mt-10">
+    <div class="reveal">
+      <SectionHeading eyebrow="常见问题" title="你可能想知道的" />
+    </div>
+    <div class="reveal mt-12">
       <FaqList items={wordex.faq} />
     </div>
   </section>
