@@ -21,7 +21,8 @@ const groups = [
   {
     title: "公司",
     links: [
-      { href: `mailto:${company.contactEmail}`, label: company.contactEmail }
+      { href: `mailto:${company.businessEmail}`, label: "商务合作：contact@siliward.com" },
+      { href: `mailto:${company.feedbackEmail}`, label: "用户反馈：feedback@siliward.com" }
     ]
   }
 ];
@@ -37,7 +38,6 @@ const groups = [
       <p class="mt-4 text-sm font-medium text-content">{company.legalNameZh}</p>
       <p class="mt-1 text-xs text-faint">{company.legalNameEn}</p>
       <p class="mt-4 max-w-md text-sm leading-7 text-muted">{company.description}</p>
-      <p class="mt-6 text-xs text-faint">© 2026 {company.name}. 保留所有权利。</p>
     </div>
     <div class="grid gap-8 sm:grid-cols-3">
       {groups.map((group) => (
@@ -54,6 +54,19 @@ const groups = [
           </ul>
         </div>
       ))}
+    </div>
+  </div>
+  <div class="border-t border-line">
+    <div class="section-shell flex flex-col items-center justify-between gap-3 py-5 text-center sm:flex-row sm:text-left">
+      <p class="text-sm text-faint">© 2026 {company.name}. 保留所有权利。</p>
+      <a
+        class="focus-ring inline-flex rounded-md text-sm font-medium text-muted transition hover:text-accent hover:underline hover:underline-offset-4"
+        href="https://beian.miit.gov.cn/"
+        rel="noreferrer"
+        target="_blank"
+      >
+        {company.filingNumber}
+      </a>
     </div>
   </div>
 </footer>

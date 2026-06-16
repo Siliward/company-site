@@ -24,8 +24,10 @@ const sections = [
             <p class="mt-3 text-base leading-8 text-muted">{body}</p>
           ) : (
             <p class="mt-3 text-base leading-8 text-muted">
-              有任何隐私相关问题，欢迎联系
-              <a class="text-accent underline underline-offset-4" href={`mailto:${company.contactEmail}`}>{company.contactEmail}</a>。
+              商务合作请联系
+              <a class="text-accent underline underline-offset-4" href={`mailto:${company.businessEmail}`}>{company.businessEmail}</a>；
+              用户反馈请联系
+              <a class="text-accent underline underline-offset-4" href={`mailto:${company.feedbackEmail}`}>{company.feedbackEmail}</a>。
             </p>
           )}
         </section>
