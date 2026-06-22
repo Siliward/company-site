@@ -7,27 +7,27 @@ import wordex from "../data/products/wordex.json";
 
 const serviceExamples = [
   {
-    title: "让团队的知识开口说话",
-    text: "把散落在文档、聊天记录和系统里的资料，变成一个随问随答的内部助手——新人三天上手，老员工少回十遍同样的问题。"
+    title: "知识库和内部问答",
+    text: "整合分散在文档、表格、系统和沟通记录中的信息，构建可检索、可追问、可持续维护的内部知识助手。"
   },
   {
-    title: "把每天重复的活儿交给 AI",
-    text: "那些填表、归类、整理、核对的工作，一遍遍做最磨人。我们把它们自动化，让人去做真正需要动脑判断的事。"
+    title: "流程自动化和效率工具",
+    text: "围绕整理、归类、审核、生成、流转等高频重复工作，设计更稳定的自动化方案，降低人力消耗。"
   },
   {
-    title: "从数据里读出该做的决定",
-    text: "预测、识别、推荐、找异常——把你手里早就有、却没用起来的数据，变成下一步该怎么走的清晰建议。"
+    title: "正式文档和内容生产",
+    text: "面向技术报告、论文、公文等正式文档场景，优化写作、排版、协作和交付效率。"
   }
 ];
 
 const industries = ["企业办公", "科研教育", "软件研发", "运营管理", "知识服务", "智能制造"];
 
 const process = [
-  ["先聊清楚要解决什么", "不急着上技术。我们先和你一起把问题说明白：到底哪件事卡住了，做成什么样算成功。"],
-  ["看看手上有什么", "评估你现有的系统和数据，告诉你哪些能用、哪些要补，以及边界在哪。"],
-  ["先做个小的试试", "用一个小原型快速验证效果。看到价值，再决定要不要投入更多。"],
-  ["认真地做成产品", "稳定、安全、好维护——我们交付的是能长期用的产品，不是一次性的演示。"],
-  ["上线之后还在", "上线只是开始。我们陪你持续打磨、调优、长出新的能力。"]
+  ["明确业务目标", "先对齐要解决的具体问题、适用范围和预期结果，避免项目一开始就失焦。"],
+  ["评估数据与系统条件", "梳理现有资料、业务系统和流程约束，判断哪些可以直接接入，哪些需要补齐。"],
+  ["小范围验证效果", "先在一个明确场景内完成验证，确认可行性、效果和投入产出，再决定后续范围。"],
+  ["形成稳定交付", "在验证通过后，补齐权限、安全、稳定性和维护能力，交付可长期运行的工具或系统。"],
+  ["持续优化迭代", "上线不是结束。我们会根据使用反馈继续优化，让系统真正进入日常工作。"]
 ];
 ---
 
@@ -38,10 +38,10 @@ const process = [
       <div class="rise">
         <p class="font-mono text-xs uppercase tracking-[0.32em] text-accent">{company.legalNameEn}</p>
         <h1 class="mt-7 font-display font-semibold text-content display-xl">
-          做能真正<br />用起来的 <span class="glow-text">AI</span>。
+          让 AI 真正进入业务，<br />而不只是停留在 <span class="glow-text">演示里</span>。
         </h1>
         <p class="mt-8 max-w-xl text-lg leading-8 text-muted">
-          我们做产品，也帮企业把 AI 真正用进日常业务里。<br class="hidden sm:block" />不停在演示，而是做成每天都离不开的工具。
+          Siliward 面向企业提供 AI 产品与落地服务。<br class="hidden sm:block" />围绕知识管理、流程自动化和正式文档生产等场景，帮助团队把 AI 接入日常工作，形成可长期使用的工具和系统。
         </p>
         <div class="mt-10 flex flex-col gap-3 sm:flex-row">
           <ButtonLink href="#products">看看我们的产品</ButtonLink>
@@ -92,8 +92,8 @@ const process = [
       <div class="reveal">
         <SectionHeading
           eyebrow="我们的产品"
-          title="把麻烦事，做成顺手的工具"
-          text="从我们自己真实的需求里长出来——先解决自己的麻烦，再分享给同样需要的你。"
+          title="先把真实问题，做成顺手的工具"
+          text="我们的产品从具体场景里长出来。先把一个真实、反复出现的问题解决好，再把它沉淀成可复用的产品能力。"
         />
       </div>
       <div class="mt-14">
@@ -105,7 +105,7 @@ const process = [
           <h3 class="mt-6 font-display text-4xl font-semibold text-content">{wordex.name}</h3>
           <p class="mt-2 text-lg font-semibold text-accent">{wordex.tagline}</p>
           <p class="mt-4 max-w-2xl text-base leading-8 text-muted">
-            技术报告、期刊论文、公文——这类讲究格式的文档，最烦的就是反复排版。WordeX 让你和 AI 一起专心写内容，排版交给模板，规范的 Word 一键生成。
+            技术报告、期刊论文、公文这类正式文档，真正耗时的往往不是内容本身，而是排版、编号、模板和反复修改。WordeX 让你和 AI 专注内容生产，把版式规范和成稿交付交给模板处理。
           </p>
           <div class="mt-8 flex flex-col gap-3 sm:flex-row">
             <ButtonLink href="/products/wordex">认识 WordeX</ButtonLink>
@@ -121,10 +121,10 @@ const process = [
     <div class="reveal mx-auto max-w-3xl text-center">
       <p class="text-xs font-semibold uppercase tracking-[0.16em] text-accent">也帮你做</p>
       <h2 class="mt-3 font-display text-3xl font-semibold tracking-tight text-content md:text-5xl">
-        你有一个想用 AI 解决的问题？<br />我们一起把它做出来。
+        从具体场景开始，<br />把 AI 做进业务流程。
       </h2>
       <p class="mt-5 text-base leading-8 text-muted">
-        做产品攒下的本事，也能用在你的业务上。不卖概念，从一个具体、能验证的场景开始。
+        我们更关注能不能接进现有系统、现有数据和现有流程，而不是只做一个演示结果。项目通常从单一场景起步，验证后再逐步扩展。
       </p>
     </div>
     <div class="mt-14 grid gap-5 md:grid-cols-3">
@@ -143,9 +143,9 @@ const process = [
     <div class="section-shell grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
       <div class="reveal">
         <p class="font-mono text-xs uppercase tracking-[0.16em] text-accent">我们怎么合作</p>
-        <h2 class="mt-3 font-display text-3xl font-semibold text-content md:text-4xl">慢一点开始，稳一点交付</h2>
+        <h2 class="mt-3 font-display text-3xl font-semibold text-content md:text-4xl">先验证，再扩展</h2>
         <p class="mt-4 text-sm leading-7 text-muted">
-          我们不追求一上来就铺很大。先把一件事做对、做扎实，让你看到 AI 真的能省时间、能放心长期用。
+          我们通常不会一开始就铺开全部范围，而是先完成一个可验证、可衡量的小场景，再逐步形成稳定交付。
         </p>
       </div>
       <div class="grid gap-4">
@@ -166,9 +166,9 @@ const process = [
   <section class="section-shell py-20">
     <div class="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
       <div class="reveal">
-        <p class="font-mono text-xs uppercase tracking-[0.16em] text-accent">服务过的领域</p>
-        <h2 class="mt-3 font-display text-3xl font-semibold text-content md:text-4xl">不同的行业，同一个出发点</h2>
-        <p class="mt-4 text-sm leading-7 text-muted">不管你在哪个行业，我们都从"哪件事最值得先用 AI"聊起，陪你从小试点走到日常用。</p>
+        <p class="font-mono text-xs uppercase tracking-[0.16em] text-accent">服务方向</p>
+        <h2 class="mt-3 font-display text-3xl font-semibold text-content md:text-4xl">不同行业，落地方式都离不开具体场景</h2>
+        <p class="mt-4 text-sm leading-7 text-muted">无论来自哪个行业，真正能落地的项目，通常都从资料、流程、协作和交付中的具体问题开始。</p>
       </div>
       <div class="grid gap-3 sm:grid-cols-3">
         {industries.map((item, index) => (
@@ -182,12 +182,12 @@ const process = [
   <section class="section-shell py-24">
     <div class="reveal mesh-bg aurora overflow-hidden rounded-theme-lg border border-line-strong bg-surface p-10 text-center md:p-16">
       <p class="font-mono text-xs uppercase tracking-[0.16em] text-accent">说句话，我们就开始</p>
-      <h2 class="mt-4 font-display font-semibold text-content display-xl">把想法，<span class="glow-text">变成能用的东西</span>。</h2>
+      <h2 class="mt-4 font-display font-semibold text-content display-xl">如果你正在评估某个场景，<span class="glow-text">欢迎和我们聊聊</span>。</h2>
       <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-muted">
-        无论你是在等 WordeX，还是有个 AI 项目想找人做——发封邮件，我们聊聊。
+        如果你想讨论企业合作、业务场景或产品落地方案，欢迎发邮件到 contact@siliward.cn。<br class="hidden sm:block" />如果你想反馈产品问题或使用建议，也可以发到 feedback@siliward.cn。
       </p>
       <div class="mt-10 flex justify-center">
-        <ButtonLink href={`mailto:${company.businessEmail}`}>给我们写信</ButtonLink>
+        <ButtonLink href={`mailto:${company.businessEmail}`}>咨询合作方案</ButtonLink>
       </div>
     </div>
   </section>
