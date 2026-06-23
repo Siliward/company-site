@@ -7,28 +7,19 @@ import wordex from "../data/products/wordex.json";
 
 const serviceExamples = [
   {
-    title: "知识库和内部问答",
-    text: "整合分散在文档、表格、系统和沟通记录中的信息，构建可检索、可追问、可持续维护的内部知识助手。"
+    title: "私有化部署",
+    text: "将成熟AI应用部署至企业内网环境，满足企业数据安全、人员权限管控与内部运维要求。"
   },
   {
-    title: "流程自动化和效率工具",
-    text: "围绕整理、归类、审核、生成、流转等高频重复工作，设计更稳定的自动化方案，降低人力消耗。"
+    title: "定制开发",
+    text: "结合企业自有业务流程与内部系统，针对性拓展产品功能，贴合团队固有工作模式。"
   },
   {
-    title: "正式文档和内容生产",
-    text: "面向技术报告、论文、公文等正式文档场景，优化写作、排版、协作和交付效率。"
+    title: "持续迭代",
+    text: "基于已验证的产品基线持续优化，拒绝从零开发一次性项目，保障交付成果长期可用、便于维护。"
   }
 ];
 
-const industries = ["企业办公", "科研教育", "软件研发", "运营管理", "知识服务", "智能制造"];
-
-const process = [
-  ["明确业务目标", "先对齐要解决的具体问题、适用范围和预期结果，避免项目一开始就失焦。"],
-  ["评估数据与系统条件", "梳理现有资料、业务系统和流程约束，判断哪些可以直接接入，哪些需要补齐。"],
-  ["小范围验证效果", "先在一个明确场景内完成验证，确认可行性、效果和投入产出，再决定后续范围。"],
-  ["形成稳定交付", "在验证通过后，补齐权限、安全、稳定性和维护能力，交付可长期运行的工具或系统。"],
-  ["持续优化迭代", "上线不是结束。我们会根据使用反馈继续优化，让系统真正进入日常工作。"]
-];
 ---
 
 <Layout title={`${company.name} - ${company.tagline}`} description={company.description} canonicalPath="/" theme="company">
@@ -38,14 +29,14 @@ const process = [
       <div class="rise">
         <p class="font-mono text-xs uppercase tracking-[0.32em] text-accent">{company.legalNameEn}</p>
         <h1 class="mt-7 font-display font-semibold text-content display-xl">
-          让 AI 真正进入业务，<br />而不只是停留在 <span class="glow-text">演示里</span>。
+          数智赋能<br /><span class="glow-text">千行百业</span>
         </h1>
         <p class="mt-8 max-w-xl text-lg leading-8 text-muted">
-          Siliward 面向企业提供 AI 产品与落地服务。<br class="hidden sm:block" />围绕知识管理、流程自动化和正式文档生产等场景，帮助团队把 AI 接入日常工作，形成可长期使用的工具和系统。
+          我们专注打造面向真实工作场景的AI产品。<br class="hidden sm:block" />目前首发聚焦正式文档处理场景，持续拓展多领域AI应用，让人工智能切实落地到日常工作之中。
         </p>
         <div class="mt-10 flex flex-col gap-3 sm:flex-row">
-          <ButtonLink href="#products">看看我们的产品</ButtonLink>
-          <ButtonLink href="#services" variant="secondary">我有个项目想聊</ButtonLink>
+          <ButtonLink href="#products">查看我们的应用</ButtonLink>
+          <ButtonLink href="#services" variant="secondary">咨询企业合作</ButtonLink>
         </div>
         <p class="mt-8 text-sm text-faint">{company.legalNameZh}</p>
       </div>
@@ -91,21 +82,21 @@ const process = [
     <div class="section-shell">
       <div class="reveal">
         <SectionHeading
-          eyebrow="我们的产品"
-          title="先把真实问题，做成顺手的工具"
-          text="我们的产品从具体场景里长出来。先把一个真实、反复出现的问题解决好，再把它沉淀成可复用的产品能力。"
+          eyebrow="我们的应用"
+          title="聚焦具体工作场景，打造可落地的AI产品"
+          text="我们从真实工作痛点出发，逐一打磨可用的AI应用，摒弃空洞的AI概念研发。WordeX 是我们首款面向正式文稿场景的产品，也是整体AI应用矩阵的起点。"
         />
       </div>
       <div class="mt-14">
         <article class="reveal flex flex-col rounded-theme-lg border border-line bg-surface p-8 transition hover:border-accent lg:p-10">
           <div class="flex items-center gap-3">
             <span class="rounded-full bg-surface-strong px-3 py-1 text-xs font-semibold text-muted">{wordex.status}</span>
-            <span class="text-xs text-faint">在线文档工具</span>
+            <span class="text-xs text-faint">智能文档工具</span>
           </div>
           <h3 class="mt-6 font-display text-4xl font-semibold text-content">{wordex.name}</h3>
           <p class="mt-2 text-lg font-semibold text-accent">{wordex.tagline}</p>
           <p class="mt-4 max-w-2xl text-base leading-8 text-muted">
-            技术报告、期刊论文、公文这类正式文档，真正耗时的往往不是内容本身，而是排版、编号、模板和反复修改。WordeX 让你和 AI 专注内容生产，把版式规范和成稿交付交给模板处理。
+            面向技术报告、期刊论文、公务公文等正式文档场景，拆分写作、排版与成稿流程。使用者专注内容创作，系统统一完成标准化排版与规范定稿，输出合规完整文档。
           </p>
           <div class="mt-8 flex flex-col gap-3 sm:flex-row">
             <ButtonLink href="/products/wordex">认识 WordeX</ButtonLink>
@@ -119,12 +110,12 @@ const process = [
   <!-- 服务 -->
   <section id="services" class="section-shell py-24">
     <div class="reveal mx-auto max-w-3xl text-center">
-      <p class="text-xs font-semibold uppercase tracking-[0.16em] text-accent">也帮你做</p>
+      <p class="text-xs font-semibold uppercase tracking-[0.16em] text-accent">企业合作</p>
       <h2 class="mt-3 font-display text-3xl font-semibold tracking-tight text-content md:text-5xl">
-        从具体场景开始，<br />把 AI 做进业务流程。
+        面向企业，提供<br />私有化部署与场景定制服务
       </h2>
       <p class="mt-5 text-base leading-8 text-muted">
-        我们更关注能不能接进现有系统、现有数据和现有流程，而不是只做一个演示结果。项目通常从单一场景起步，验证后再逐步扩展。
+        依托已上线验证的AI产品能力，为有需求的企业提供对接服务。我们不罗列空泛服务清单，所有交付均基于成熟现有产品展开，适配企业内部数据安全与运维规范。
       </p>
     </div>
     <div class="mt-14 grid gap-5 md:grid-cols-3">
@@ -138,56 +129,16 @@ const process = [
     </div>
   </section>
 
-  <!-- 怎么合作 -->
-  <section class="border-y border-line bg-elev py-24">
-    <div class="section-shell grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-      <div class="reveal">
-        <p class="font-mono text-xs uppercase tracking-[0.16em] text-accent">我们怎么合作</p>
-        <h2 class="mt-3 font-display text-3xl font-semibold text-content md:text-4xl">先验证，再扩展</h2>
-        <p class="mt-4 text-sm leading-7 text-muted">
-          我们通常不会一开始就铺开全部范围，而是先完成一个可验证、可衡量的小场景，再逐步形成稳定交付。
-        </p>
-      </div>
-      <div class="grid gap-4">
-        {process.map(([title, text], index) => (
-          <div class="reveal flex gap-5 rounded-theme border border-line bg-surface p-5" style={`--reveal-delay:${index * 0.06}s`}>
-            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-theme bg-accent font-mono text-sm font-semibold text-accent-contrast">{index + 1}</span>
-            <div>
-              <h3 class="font-display text-lg font-semibold text-content">{title}</h3>
-              <p class="mt-1 text-sm leading-6 text-muted">{text}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- 行业 -->
-  <section class="section-shell py-20">
-    <div class="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
-      <div class="reveal">
-        <p class="font-mono text-xs uppercase tracking-[0.16em] text-accent">服务方向</p>
-        <h2 class="mt-3 font-display text-3xl font-semibold text-content md:text-4xl">不同行业，落地方式都离不开具体场景</h2>
-        <p class="mt-4 text-sm leading-7 text-muted">无论来自哪个行业，真正能落地的项目，通常都从资料、流程、协作和交付中的具体问题开始。</p>
-      </div>
-      <div class="grid gap-3 sm:grid-cols-3">
-        {industries.map((item, index) => (
-          <div class="reveal rounded-theme border border-line bg-surface p-4 text-center text-sm font-semibold text-muted" style={`--reveal-delay:${index * 0.05}s`}>{item}</div>
-        ))}
-      </div>
-    </div>
-  </section>
-
   <!-- 联系 -->
   <section class="section-shell py-24">
     <div class="reveal mesh-bg aurora overflow-hidden rounded-theme-lg border border-line-strong bg-surface p-10 text-center md:p-16">
-      <p class="font-mono text-xs uppercase tracking-[0.16em] text-accent">说句话，我们就开始</p>
-      <h2 class="mt-4 font-display font-semibold text-content display-xl">如果你正在评估某个场景，<span class="glow-text">欢迎和我们聊聊</span>。</h2>
+      <p class="font-mono text-xs uppercase tracking-[0.16em] text-accent">联系我们</p>
+      <h2 class="mt-4 font-display font-semibold text-content display-xl">想了解更多，<span class="glow-text">就来聊聊</span></h2>
       <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-muted">
-        如果你想讨论企业合作、业务场景或产品落地方案，欢迎发邮件到 contact@siliward.cn。<br class="hidden sm:block" />如果你想反馈产品问题或使用建议，也可以发到 feedback@siliward.cn。
+        如果你想了解产品进展，或有企业合作相关需求，欢迎直接给我们发邮件。
       </p>
       <div class="mt-10 flex justify-center">
-        <ButtonLink href={`mailto:${company.businessEmail}`}>咨询合作方案</ButtonLink>
+        <ButtonLink href={`mailto:${company.businessEmail}`}>联系商务合作</ButtonLink>
       </div>
     </div>
   </section>
