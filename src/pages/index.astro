@@ -3,6 +3,17 @@ import Layout from "../components/Layout.astro";
 import { company } from "../data/company";
 import wordex from "../data/products/wordex.json";
 import { withBase } from "../utils/paths";
+
+const tickerItems = [
+  "AI 技术研发",
+  "行业落地应用",
+  "私有化部署",
+  "定制化开发",
+  "北京硅途数智科技有限公司",
+  "Beijing Siliward Technology Co., Ltd.",
+  "数智赋能千行百业",
+  "WordeX 在线编辑器",
+];
 ---
 
 <Layout title={`${company.name} - ${company.tagline}`} description={company.description} canonicalPath="/" theme="company">
@@ -81,16 +92,17 @@ header {
 }
 .ticker-track {
   display: flex;
-  gap: 0;
+  gap: 2.5rem;
   width: max-content;
+  will-change: transform;
   animation: ticker-scroll 32s linear infinite;
 }
 .ticker-track:hover { animation-play-state: paused; }
-.ticker-item {
+.ticker-sequence {
   display: flex;
   align-items: center;
   gap: 2.5rem;
-  padding: 0 2.5rem;
+  flex: 0 0 auto;
   white-space: nowrap;
   font-family: var(--font-display);
   font-size: 0.9rem;
@@ -106,7 +118,7 @@ header {
 }
 @keyframes ticker-scroll {
   from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  to   { transform: translateX(-25%); }
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -747,7 +759,6 @@ header {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ticker-track { animation: none; }
   .press-up, .reveal { animation: none; opacity: 1; transform: none; }
 }
 </style>
@@ -755,16 +766,14 @@ header {
 <!-- ══ 跑马灯 ════════════════════════════════════════════ -->
 <div class="ticker-wrap" aria-hidden="true">
   <div class="ticker-track">
-    {[...Array(2)].map(() => (
-      <div class="ticker-item">
-        <span>AI 技术研发</span><span class="ticker-sep"></span>
-        <span>行业落地应用</span><span class="ticker-sep"></span>
-        <span>WordeX 智能文档系统</span><span class="ticker-sep"></span>
-        <span>私有化部署</span><span class="ticker-sep"></span>
-        <span>定制开发服务</span><span class="ticker-sep"></span>
-        <span>北京硅途数智科技</span><span class="ticker-sep"></span>
-        <span>Siliward Technology</span><span class="ticker-sep"></span>
-        <span>数智赋能千行百业</span><span class="ticker-sep"></span>
+    {[...Array(4)].map(() => (
+      <div class="ticker-sequence">
+        {tickerItems.map((item) => (
+          <>
+            <span>{item}</span>
+            <span class="ticker-sep"></span>
+          </>
+        ))}
       </div>
     ))}
   </div>
@@ -782,7 +791,7 @@ header {
       </div>
       <div class="masthead-center">
         <div class="masthead-title">SILIWARD</div>
-        <div class="masthead-sub">{company.legalNameZh} — 数智赋能千行百业</div>
+        <div class="masthead-sub">{company.legalNameZh}</div>
       </div>
       <div class="masthead-meta masthead-meta-r">
         {company.legalNameEn}<br />
@@ -814,7 +823,8 @@ header {
           <div class="editorial-double"></div>
 
           <p class="hero-deck">
-            我们专注打造面向真实工作场景的AI产品，从具体痛点出发，逐一打磨可用的工具，摒弃空洞的概念炒作。首发聚焦正式文档处理场景，持续拓展多领域AI应用矩阵。
+            我们专注打造面向真实工作场景的AI产品。</br></br>
+            首发聚焦正式文档处理场景，持续拓展多领域AI应用矩阵。
           </p>
 
           <div class="hero-actions">
@@ -893,7 +903,7 @@ header {
     <div class="services-grid">
       {[
         { n:"01", title:"私有化部署", text:"将成熟AI应用部署至企业内网环境，满足企业数据安全、人员权限管控与内部运维要求。" },
-        { n:"02", title:"定制开发", text:"结合企业自有业务流程与内部系统，针对性拓展产品功能，贴合团队固有工作模式。" },
+        { n:"02", title:"定制化开发", text:"结合企业自有业务流程与内部系统，针对性拓展产品功能，贴合团队固有工作模式。" },
         { n:"03", title:"持续迭代", text:"基于已验证的产品基线持续优化，拒绝从零开发一次性项目，保障交付成果长期可用、便于维护。" },
       ].map((s, i) => (
         <div class="reveal service-item" style={`--reveal-delay:${i*0.1}s`}>
@@ -912,12 +922,11 @@ header {
     <div class="cta-inner reveal">
       <div>
         <h2 class="cta-headline">
-          想聊聊？<br />
-          <span class="cta-red">就来找</span><br />
-          我们。
+          感兴趣？<br />
+          <span class="cta-red">来聊聊。</span><br />
         </h2>
         <p class="cta-sub">
-          如果你想了解产品进展，或有企业合作相关需求，<br />欢迎直接给我们发邮件。
+          如果你想了解产品进展，<br />或有企业合作相关需求，<br />欢迎直接给我们发邮件。
         </p>
       </div>
       <div class="cta-actions">
