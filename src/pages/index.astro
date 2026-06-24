@@ -1,145 +1,965 @@
 ---
 import Layout from "../components/Layout.astro";
-import ButtonLink from "../components/ButtonLink.astro";
-import SectionHeading from "../components/SectionHeading.astro";
 import { company } from "../data/company";
 import wordex from "../data/products/wordex.json";
-
-const serviceExamples = [
-  {
-    title: "私有化部署",
-    text: "将成熟AI应用部署至企业内网环境，满足企业数据安全、人员权限管控与内部运维要求。"
-  },
-  {
-    title: "定制开发",
-    text: "结合企业自有业务流程与内部系统，针对性拓展产品功能，贴合团队固有工作模式。"
-  },
-  {
-    title: "持续迭代",
-    text: "基于已验证的产品基线持续优化，拒绝从零开发一次性项目，保障交付成果长期可用、便于维护。"
-  }
-];
-
+import { withBase } from "../utils/paths";
 ---
 
 <Layout title={`${company.name} - ${company.tagline}`} description={company.description} canonicalPath="/" theme="company">
-  <!-- Hero -->
-  <section class="mesh-bg aurora">
-    <div class="section-shell grid min-h-[calc(100vh-64px)] items-center gap-14 py-20 lg:grid-cols-[1.05fr_0.95fr]">
-      <div class="rise">
-        <p class="font-mono text-xs uppercase tracking-[0.32em] text-accent">{company.legalNameEn}</p>
-        <h1 class="mt-7 font-display font-semibold text-content display-xl">
-          数智赋能<br /><span class="glow-text">千行百业</span>
-        </h1>
-        <p class="mt-8 max-w-xl text-lg leading-8 text-muted">
-          我们专注打造面向真实工作场景的AI产品。<br class="hidden sm:block" />目前首发聚焦正式文档处理场景，持续拓展多领域AI应用，让人工智能切实落地到日常工作之中。
-        </p>
-        <div class="mt-10 flex flex-col gap-3 sm:flex-row">
-          <ButtonLink href="#products">查看我们的应用</ButtonLink>
-          <ButtonLink href="#services" variant="secondary">咨询企业合作</ButtonLink>
-        </div>
-        <p class="mt-8 text-sm text-faint">{company.legalNameZh}</p>
+
+<style>
+/* ═══════════════════════════════════════════════════════
+   印刷局主题令牌
+═══════════════════════════════════════════════════════ */
+:root, [data-theme="company"] {
+  color-scheme: light;
+  --bg: #F4EFE5;
+  --bg-dark: #1A1714;
+  --ink: #1A1714;
+  --ink-muted: rgba(26,23,20,0.55);
+  --ink-faint: rgba(26,23,20,0.3);
+  --red: #D4280A;
+  --red-dark: #A81E08;
+  --red-soft: rgba(212,40,10,0.08);
+  --paper: #FAF7F0;
+  --paper-warm: #EDE8DC;
+  --line: rgba(26,23,20,0.12);
+  --line-strong: rgba(26,23,20,0.25);
+  --font-display: "Bebas Neue", "Noto Serif SC", serif;
+  --font-serif: "Noto Serif SC", Georgia, serif;
+  --font-mono: "IBM Plex Mono", monospace;
+  --radius: 2px;
+  --radius-lg: 4px;
+  --nav-bg: rgba(244,239,229,0.92);
+  --accent: #D4280A;
+  --accent-contrast: #FAF7F0;
+  --content: #1A1714;
+  --content-muted: rgba(26,23,20,0.55);
+  --content-faint: rgba(26,23,20,0.3);
+  --surface: #FAF7F0;
+  --bg-elev: #EDE8DC;
+}
+
+/* ═══════════════════════════════════════════════════════
+   基础重置
+═══════════════════════════════════════════════════════ */
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  cursor: default;
+}
+
+/* 纸张噪点纹理 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   导航栏覆盖
+═══════════════════════════════════════════════════════ */
+header {
+  border-bottom-color: var(--line-strong) !important;
+  background: var(--nav-bg) !important;
+}
+
+/* ═══════════════════════════════════════════════════════
+   跑马灯滚动横幅
+═══════════════════════════════════════════════════════ */
+.ticker-wrap {
+  background: var(--red);
+  overflow: hidden;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--red-dark);
+}
+.ticker-track {
+  display: flex;
+  gap: 0;
+  width: max-content;
+  animation: ticker-scroll 32s linear infinite;
+}
+.ticker-track:hover { animation-play-state: paused; }
+.ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  padding: 0 2.5rem;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  color: var(--accent-contrast);
+}
+.ticker-sep {
+  display: inline-block;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  margin: 0 -1rem;
+}
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ═══════════════════════════════════════════════════════
+   HERO — 报纸版面
+═══════════════════════════════════════════════════════ */
+.hero {
+  border-bottom: 3px double var(--line-strong);
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 版面头部：期刊信息栏 */
+.masthead {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--line-strong);
+  gap: 1.5rem;
+}
+.masthead-rule {
+  height: 1px;
+  background: var(--line-strong);
+}
+.masthead-center {
+  text-align: center;
+}
+.masthead-title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: 0.35em;
+  color: var(--ink);
+  line-height: 1;
+}
+.masthead-sub {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--ink-muted);
+  margin-top: 0.25rem;
+}
+.masthead-meta {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  line-height: 1.6;
+}
+.masthead-meta-r { text-align: right; }
+
+/* 主体大字区 */
+.hero-body {
+  padding: 3rem 0 0;
+  position: relative;
+}
+
+/* 竖线装饰 */
+.vert-rule {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 1px;
+  background: var(--line-strong);
+}
+
+.hero-layout {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr 1.5rem 340px;
+  gap: 0;
+  align-items: start;
+  position: relative;
+}
+
+/* 竖排期刊号 */
+.hero-vol {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  padding-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border-right: 1px solid var(--line);
+  padding-right: 0.75rem;
+  height: 100%;
+}
+
+/* 中央大字 */
+.hero-main { padding: 0 2.5rem; }
+
+.hero-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  opacity: 0;
+  animation: press-up 0.7s 0.1s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.kicker-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--red);
+  opacity: 0.35;
+}
+
+.hero-headline {
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 13vw, 10rem);
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  margin: 0;
+  opacity: 0;
+  animation: press-up 0.9s 0.22s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.headline-red { color: var(--red); }
+.headline-outline {
+  -webkit-text-stroke: 2px var(--ink);
+  color: transparent;
+}
+
+/* 分割双线 */
+.editorial-double {
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 3px solid var(--ink);
+  height: 4px;
+  margin: 1.8rem 0;
+  opacity: 0;
+  animation: press-up 0.6s 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+
+.hero-deck {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  line-height: 1.85;
+  color: var(--ink-muted);
+  max-width: 44ch;
+  column-count: 2;
+  column-gap: 2rem;
+  column-rule: 1px solid var(--line);
+  opacity: 0;
+  animation: press-up 0.8s 0.6s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: press-up 0.7s 0.75s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+
+/* 右栏：特写框 */
+.hero-sidebar {
+  border-left: 1px solid var(--line-strong);
+  padding: 0 0 2rem 1.5rem;
+  position: relative;
+}
+
+.sidebar-label {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--red);
+  background: var(--red);
+  color: var(--accent-contrast);
+  padding: 0.2rem 0.6rem;
+  display: inline-block;
+  margin-bottom: 1.25rem;
+}
+
+/* 产品镜框 */
+.sidebar-frame {
+  background: var(--bg-dark);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 4px;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  animation: press-up 1s 0.38s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.sidebar-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 30% 0%, rgba(212,40,10,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.frame-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.65rem;
+  border: 1px solid rgba(212,40,10,0.4);
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  color: var(--red);
+}
+.frame-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--red);
+  animation: pulse-red 2s ease-in-out infinite;
+}
+@keyframes pulse-red {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+
+.frame-name {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  line-height: 0.95;
+  letter-spacing: 0.04em;
+  color: #FAF7F0;
+  margin: 1rem 0 0.25rem;
+  -webkit-text-stroke: 0;
+}
+.frame-tagline {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: var(--red);
+}
+.frame-desc {
+  font-family: var(--font-serif);
+  font-size: 0.8rem;
+  line-height: 1.75;
+  color: rgba(244,239,229,0.55);
+  margin-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 1rem;
+}
+.frame-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1rem;
+}
+.frame-tag {
+  padding: 0.2rem 0.55rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  color: rgba(244,239,229,0.45);
+  transition: all 0.2s;
+}
+.frame-tag:hover {
+  background: rgba(212,40,10,0.12);
+  border-color: rgba(212,40,10,0.35);
+  color: var(--red);
+}
+.frame-cta {
+  margin-top: 1.25rem;
+  display: flex;
+  gap: 0.6rem;
+}
+
+/* ═══════════════════════════════════════════════════════
+   按钮
+═══════════════════════════════════════════════════════ */
+.btn-ink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.6rem;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  border-radius: var(--radius);
+  transition: transform 0.18s, background 0.18s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-ink::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.08) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.5s;
+}
+.btn-ink:hover::after { transform: translateX(100%); }
+.btn-ink:hover {
+  background: var(--red);
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.6rem;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--ink);
+  transition: all 0.2s;
+}
+.btn-outline:hover {
+  background: var(--ink);
+  color: var(--paper);
+  transform: translateY(-2px);
+}
+
+.btn-frame {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  background: var(--red);
+  color: var(--accent-contrast);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  border-radius: var(--radius);
+  transition: all 0.2s;
+}
+.btn-frame:hover {
+  background: #FAF7F0;
+  color: var(--red);
+  transform: translateY(-1px);
+}
+.btn-frame-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  background: transparent;
+  color: rgba(244,239,229,0.6);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,0.12);
+  transition: all 0.2s;
+}
+.btn-frame-ghost:hover {
+  color: #FAF7F0;
+  border-color: rgba(255,255,255,0.3);
+}
+
+/* ═══════════════════════════════════════════════════════
+   数字计数条
+═══════════════════════════════════════════════════════ */
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line);
+  margin: 2.5rem 0 0;
+}
+.stat-item {
+  padding: 1.25rem 0;
+  border-right: 1px solid var(--line);
+  text-align: center;
+}
+.stat-item:last-child { border-right: none; }
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+  line-height: 1;
+}
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  color: var(--ink-faint);
+  margin-top: 0.3rem;
+}
+
+/* ═══════════════════════════════════════════════════════
+   服务区 — 不对称网格
+═══════════════════════════════════════════════════════ */
+.services-section {
+  border-top: 3px double var(--line-strong);
+  padding: 5rem 0;
+}
+
+.services-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3rem;
+  align-items: end;
+  margin-bottom: 3.5rem;
+}
+
+.section-num {
+  font-family: var(--font-display);
+  font-size: 5rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--red);
+  -webkit-text-stroke: 1.5px var(--red);
+  color: transparent;
+}
+
+.section-heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--ink);
+}
+.section-heading-sub {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: var(--ink-muted);
+  margin-top: 0.75rem;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+  border: 1.5px solid var(--line-strong);
+}
+
+.service-item {
+  padding: 2.25rem;
+  border-right: 1px solid var(--line-strong);
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s;
+  cursor: default;
+}
+.service-item:last-child { border-right: none; }
+.service-item:hover { background: var(--paper-warm); }
+
+.service-item::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--red);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+}
+.service-item:hover::before { transform: scaleY(1); }
+
+.svc-num {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--line-strong);
+  display: block;
+  margin-bottom: 1.25rem;
+}
+.svc-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  margin-bottom: 0.75rem;
+}
+.svc-text {
+  font-family: var(--font-serif);
+  font-size: 0.875rem;
+  line-height: 1.85;
+  color: var(--ink-muted);
+}
+
+/* ═══════════════════════════════════════════════════════
+   CTA — 全幅黑底
+═══════════════════════════════════════════════════════ */
+.cta-section {
+  background: var(--bg-dark);
+  padding: 6rem 0;
+  position: relative;
+  overflow: hidden;
+}
+.cta-section::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--red);
+}
+.cta-section::after {
+  content: "SILIWARD";
+  position: absolute;
+  bottom: -1rem; right: -0.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 18vw, 16rem);
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.04);
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
+
+.cta-inner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 4rem;
+}
+
+.cta-headline {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  color: var(--paper);
+  position: relative;
+}
+.cta-red { color: var(--red); }
+
+.cta-sub {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.85;
+  color: rgba(244,239,229,0.5);
+  margin-top: 1.25rem;
+  max-width: 38ch;
+}
+
+.cta-actions {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.btn-cta-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 2.2rem;
+  background: var(--red);
+  color: var(--accent-contrast);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: 0.12em;
+  border-radius: var(--radius);
+  white-space: nowrap;
+  transition: all 0.22s;
+  box-shadow: 4px 4px 0 rgba(212,40,10,0.3);
+}
+.btn-cta-primary:hover {
+  transform: translate(-2px,-2px);
+  box-shadow: 6px 6px 0 rgba(212,40,10,0.4);
+}
+
+.btn-cta-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.8rem;
+  background: transparent;
+  color: rgba(244,239,229,0.55);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  border-radius: var(--radius);
+  border: 1px solid rgba(244,239,229,0.15);
+  white-space: nowrap;
+  transition: all 0.22s;
+}
+.btn-cta-ghost:hover {
+  color: var(--paper);
+  border-color: rgba(244,239,229,0.4);
+}
+
+/* ═══════════════════════════════════════════════════════
+   公用
+═══════════════════════════════════════════════════════ */
+@keyframes press-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
+  transition-delay: var(--reveal-delay, 0s);
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+.section-shell {
+  width: min(1160px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+/* ═══════════════════════════════════════════════════════
+   响应式
+═══════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .hero-layout { grid-template-columns: 0 1fr 0 1fr; }
+  .hero-vol { display: none; }
+  .hero-sidebar { border-left: none; border-top: 1px solid var(--line-strong); padding: 1.5rem 0 0; }
+  .hero-deck { column-count: 1; }
+  .cta-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+  .services-grid { grid-template-columns: 1fr; }
+  .service-item { border-right: none; border-bottom: 1px solid var(--line-strong); }
+  .service-item:last-child { border-bottom: none; }
+  .masthead { grid-template-columns: 1fr; justify-items: center; gap: 0.5rem; }
+  .masthead-rule { display: none; }
+  .masthead-meta-r { text-align: center; }
+  .masthead-meta:first-child { display: none; }
+}
+
+@media (max-width: 600px) {
+  .hero-layout { grid-template-columns: 1fr; }
+  .stat-strip { grid-template-columns: repeat(3, 1fr); }
+  .hero-headline { font-size: clamp(3.5rem, 16vw, 5rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track { animation: none; }
+  .press-up, .reveal { animation: none; opacity: 1; transform: none; }
+}
+</style>
+
+<!-- ══ 跑马灯 ════════════════════════════════════════════ -->
+<div class="ticker-wrap" aria-hidden="true">
+  <div class="ticker-track">
+    {[...Array(2)].map(() => (
+      <div class="ticker-item">
+        <span>AI 技术研发</span><span class="ticker-sep"></span>
+        <span>行业落地应用</span><span class="ticker-sep"></span>
+        <span>WordeX 智能文档系统</span><span class="ticker-sep"></span>
+        <span>私有化部署</span><span class="ticker-sep"></span>
+        <span>定制开发服务</span><span class="ticker-sep"></span>
+        <span>北京硅途数智科技</span><span class="ticker-sep"></span>
+        <span>Siliward Technology</span><span class="ticker-sep"></span>
+        <span>数智赋能千行百业</span><span class="ticker-sep"></span>
       </div>
+    ))}
+  </div>
+</div>
 
-      <!-- WordeX 文档预览 -->
-      <div class="rise glow-ring rounded-theme-lg border border-line bg-surface p-5 backdrop-blur-sm sm:p-6" style="animation-delay:0.12s">
-        <div class="flex items-center justify-between border-b border-line pb-4">
-          <div class="flex items-center gap-2">
-            <span class="h-3 w-3 rounded-full bg-red-400"></span>
-            <span class="h-3 w-3 rounded-full bg-accent-2"></span>
-            <span class="h-3 w-3 rounded-full bg-accent"></span>
+<!-- ══ HERO — 报纸版面 ════════════════════════════════════ -->
+<article class="hero">
+  <div class="section-shell">
+
+    <!-- 版面头（期刊信息栏） -->
+    <div class="masthead">
+      <div class="masthead-meta">
+        VOL.1 · NO.1<br />
+        BEIJING, P.R. CHINA
+      </div>
+      <div class="masthead-center">
+        <div class="masthead-title">SILIWARD</div>
+        <div class="masthead-sub">{company.legalNameZh} — 数智赋能千行百业</div>
+      </div>
+      <div class="masthead-meta masthead-meta-r">
+        {company.legalNameEn}<br />
+        ESTABLISHED 2026
+      </div>
+    </div>
+
+    <!-- 主体 -->
+    <div class="hero-body">
+      <div class="hero-layout">
+
+        <!-- 竖排期刊号 -->
+        <div class="hero-vol">AI · TECH · INDUSTRY · 2026</div>
+
+        <!-- 中央大字主文 -->
+        <div class="hero-main">
+          <p class="hero-kicker">
+            <span>数智创新前沿</span>
+            <span class="kicker-rule"></span>
+          </p>
+
+          <h1 class="hero-headline">
+            数智<br />
+            <span class="headline-outline">赋能</span><br />
+            <span class="headline-red">千行</span><br />
+            百业
+          </h1>
+
+          <div class="editorial-double"></div>
+
+          <p class="hero-deck">
+            我们专注打造面向真实工作场景的AI产品，从具体痛点出发，逐一打磨可用的工具，摒弃空洞的概念炒作。首发聚焦正式文档处理场景，持续拓展多领域AI应用矩阵。
+          </p>
+
+          <div class="hero-actions">
+            <a href="#products" class="btn-ink">
+              查看我们的应用
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M7.5 1.5L13 7l-5.5 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a href="#services" class="btn-outline">企业合作咨询</a>
           </div>
-          <span class="font-mono text-xs text-faint">WordeX · 一键成稿</span>
-        </div>
 
-        <div class="mt-5">
-          <p class="text-xs font-semibold text-faint">你只管写内容</p>
-          <div class="mt-2 rounded-theme bg-surface-strong p-4 font-mono text-sm leading-7 text-muted">
-            <p><span class="text-accent">\include</span>{"{@builtin/tech.report.basic}"}</p>
-            <p><span class="text-accent">\title</span>{"{技术报告模板使用说明}"}</p>
-            <p><span class="text-accent">\section</span>{"{套用模板}"}</p>
-          </div>
-        </div>
-
-        <div class="mt-4">
-          <p class="text-xs font-semibold text-faint">模板负责排版，一键生成</p>
-          <div class="mt-2 rounded-theme border border-line-strong bg-accent-soft p-4">
-            <div class="flex items-start gap-3">
-              <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-contrast">✓</span>
-              <div>
-                <p class="font-semibold text-content">技术报告.docx</p>
-                <p class="mt-1 text-sm text-accent">排版规范 · Word 里可继续编辑</p>
-              </div>
+          <!-- 数字条 -->
+          <div class="stat-strip">
+            <div class="stat-item">
+              <div class="stat-num">01</div>
+              <div class="stat-label">首款产品</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">∞</div>
+              <div class="stat-label">应用场景</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">100%</div>
+              <div class="stat-label">场景驱动</div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- 产品 -->
-  <section id="products" class="border-t border-line bg-elev py-24">
-    <div class="section-shell">
-      <div class="reveal">
-        <SectionHeading
-          eyebrow="我们的应用"
-          title="聚焦具体工作场景，打造可落地的AI产品"
-          text="我们从真实工作痛点出发，逐一打磨可用的AI应用，摒弃空洞的AI概念研发。WordeX 是我们首款面向正式文稿场景的产品，也是整体AI应用矩阵的起点。"
-        />
-      </div>
-      <div class="mt-14">
-        <article class="reveal flex flex-col rounded-theme-lg border border-line bg-surface p-8 transition hover:border-accent lg:p-10">
-          <div class="flex items-center gap-3">
-            <span class="rounded-full bg-surface-strong px-3 py-1 text-xs font-semibold text-muted">{wordex.status}</span>
-            <span class="text-xs text-faint">智能文档工具</span>
-          </div>
-          <h3 class="mt-6 font-display text-4xl font-semibold text-content">{wordex.name}</h3>
-          <p class="mt-2 text-lg font-semibold text-accent">{wordex.tagline}</p>
-          <p class="mt-4 max-w-2xl text-base leading-8 text-muted">
-            面向技术报告、期刊论文、公务公文等正式文档场景，拆分写作、排版与成稿流程。使用者专注内容创作，系统统一完成标准化排版与规范定稿，输出合规完整文档。
-          </p>
-          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-            <ButtonLink href="/products/wordex">认识 WordeX</ButtonLink>
-            <ButtonLink href="/wordex" variant="secondary">查看在线入口</ButtonLink>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
+        <!-- 右侧竖分隔 -->
+        <div style="border-right: 1px solid var(--line-strong); height: 100%;"></div>
 
-  <!-- 服务 -->
-  <section id="services" class="section-shell py-24">
-    <div class="reveal mx-auto max-w-3xl text-center">
-      <p class="text-xs font-semibold uppercase tracking-[0.16em] text-accent">企业合作</p>
-      <h2 class="mt-3 font-display text-3xl font-semibold tracking-tight text-content md:text-5xl">
-        面向企业，提供<br />私有化部署与场景定制服务
-      </h2>
-      <p class="mt-5 text-base leading-8 text-muted">
-        依托已上线验证的AI产品能力，为有需求的企业提供对接服务。我们不罗列空泛服务清单，所有交付均基于成熟现有产品展开，适配企业内部数据安全与运维规范。
-      </p>
+        <!-- 右栏：产品特写 -->
+        <div class="hero-sidebar" style="padding-left:2rem;">
+          <span class="sidebar-label">首发产品</span>
+
+          <div class="sidebar-frame" id="sidebar-frame">
+            <div class="frame-badge">
+              <span class="frame-dot"></span>
+              {wordex.status}
+            </div>
+            <div class="frame-name">{wordex.name}</div>
+            <div class="frame-tagline">// {wordex.tagline}</div>
+            <p class="frame-desc">
+              面向技术报告、期刊论文、公务公文等正式文档场景。写作与排版彻底分离，输出合规完整文档。
+            </p>
+            <div class="frame-tags">
+              {["技术报告","期刊论文","公务公文","Word 输出","模板系统"].map(t => (
+                <span class="frame-tag">{t}</span>
+              ))}
+            </div>
+            <div class="frame-cta">
+              <a href={withBase("/products/wordex")} class="btn-frame">认识 WordeX</a>
+              <a href={withBase("/wordex")} class="btn-frame-ghost">在线入口</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
-    <div class="mt-14 grid gap-5 md:grid-cols-3">
-      {serviceExamples.map((item, index) => (
-        <article class="reveal group rounded-theme-lg border border-line bg-surface p-7 transition hover:border-accent" style={`--reveal-delay:${index * 0.08}s`}>
-          <span class="font-mono text-sm text-accent">0{index + 1}</span>
-          <h3 class="mt-4 font-display text-xl font-semibold text-content">{item.title}</h3>
-          <p class="mt-3 text-sm leading-7 text-muted">{item.text}</p>
-        </article>
+  </div>
+</article>
+
+<!-- ══ 服务区 ══════════════════════════════════════════════ -->
+<section id="services" class="services-section">
+  <div class="section-shell">
+    <div class="services-header reveal">
+      <div class="section-num">02</div>
+      <div>
+        <div class="section-heading">企业合作服务</div>
+        <p class="section-heading-sub">
+          依托已上线验证的AI产品能力，为有需求的企业提供对接。<br />
+          所有交付均基于成熟现有产品，不承接空白定制项目。
+        </p>
+      </div>
+    </div>
+
+    <div class="services-grid">
+      {[
+        { n:"01", title:"私有化部署", text:"将成熟AI应用部署至企业内网环境，满足企业数据安全、人员权限管控与内部运维要求。" },
+        { n:"02", title:"定制开发", text:"结合企业自有业务流程与内部系统，针对性拓展产品功能，贴合团队固有工作模式。" },
+        { n:"03", title:"持续迭代", text:"基于已验证的产品基线持续优化，拒绝从零开发一次性项目，保障交付成果长期可用、便于维护。" },
+      ].map((s, i) => (
+        <div class="reveal service-item" style={`--reveal-delay:${i*0.1}s`}>
+          <span class="svc-num">{s.n}</span>
+          <div class="svc-title">{s.title}</div>
+          <p class="svc-text">{s.text}</p>
+        </div>
       ))}
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- 联系 -->
-  <section class="section-shell py-24">
-    <div class="reveal mesh-bg aurora overflow-hidden rounded-theme-lg border border-line-strong bg-surface p-10 text-center md:p-16">
-      <p class="font-mono text-xs uppercase tracking-[0.16em] text-accent">联系我们</p>
-      <h2 class="mt-4 font-display font-semibold text-content display-xl">想了解更多，<span class="glow-text">就来聊聊</span></h2>
-      <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-muted">
-        如果你想了解产品进展，或有企业合作相关需求，欢迎直接给我们发邮件。
-      </p>
-      <div class="mt-10 flex justify-center">
-        <ButtonLink href={`mailto:${company.businessEmail}`}>联系商务合作</ButtonLink>
+<!-- ══ CTA — 全幅黑底 ══════════════════════════════════════ -->
+<section class="cta-section" id="contact">
+  <div class="section-shell">
+    <div class="cta-inner reveal">
+      <div>
+        <h2 class="cta-headline">
+          想聊聊？<br />
+          <span class="cta-red">就来找</span><br />
+          我们。
+        </h2>
+        <p class="cta-sub">
+          如果你想了解产品进展，或有企业合作相关需求，<br />欢迎直接给我们发邮件。
+        </p>
+      </div>
+      <div class="cta-actions">
+        <a href={`mailto:${company.businessEmail}`} class="btn-cta-primary">
+          联系商务合作
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M7.5 1.5L13 7l-5.5 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href={withBase("/products/wordex")} class="btn-cta-ghost">了解 WordeX →</a>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+
 </Layout>
+
+<script>
+  /* 鼠标跟踪：右侧产品镜框轻微倾斜 */
+  (() => {
+    const frame = document.getElementById("sidebar-frame");
+    if (!frame) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
+
+    let tx = 0, ty = 0, cx = 0, cy = 0;
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+    document.addEventListener("mousemove", (e) => {
+      const rect = frame.getBoundingClientRect();
+      const dx = (e.clientX - rect.left - rect.width / 2) / rect.width;
+      const dy = (e.clientY - rect.top - rect.height / 2) / rect.height;
+      tx = dy * -6;
+      ty = dx * 8;
+    });
+
+    const tick = () => {
+      cx = lerp(cx, tx, 0.07);
+      cy = lerp(cy, ty, 0.07);
+      frame.style.transform = `perspective(900px) rotateX(${cx}deg) rotateY(${cy}deg)`;
+      requestAnimationFrame(tick);
+    };
+    tick();
+
+    document.addEventListener("mouseleave", () => { tx = 0; ty = 0; });
+  })();
+</script>
