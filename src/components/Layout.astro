@@ -13,7 +13,7 @@ interface Props {
 }
 
 const { title, description, canonicalPath = Astro.url.pathname, theme = "company" } = Astro.props;
-const pageTitle = title === company.name ? title : `${title} | ${company.name}`;
+const pageTitle = title === company.name ? title : `${title}`;
 const canonical = new URL(withBase(canonicalPath), Astro.site).toString();
 const ogImage = new URL(withBase("/og/cover.png"), Astro.site).toString();
 
