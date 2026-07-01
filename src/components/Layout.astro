@@ -19,6 +19,54 @@ const ogImage = new URL(withBase("/og/cover.png"), Astro.site).toString();
 
 const themeColor =
   theme === "friday" ? "#fdf6ee" : theme === "wordex" ? "#f7f4ec" : "#0a0e0d";
+
+const siteUrl = new URL(withBase("/"), Astro.site).toString();
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
+      name: company.legalNameZh,
+      alternateName: [company.name, company.legalNameEn],
+      url: siteUrl,
+      email: company.businessEmail,
+      description: company.description,
+      slogan: company.tagline,
+      foundingLocation: {
+        "@type": "Place",
+        name: "北京"
+      },
+      areaServed: "CN",
+      knowsAbout: [
+        "人工智能技术研发",
+        "大模型应用",
+        "AI 产品落地",
+        "私有化部署",
+        "定制化开发",
+        "正式文档处理"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${siteUrl}#website`,
+      url: siteUrl,
+      name: company.name,
+      publisher: { "@id": `${siteUrl}#organization` },
+      inLanguage: "zh-CN"
+    },
+    {
+      "@type": "WebPage",
+      "@id": `${canonical}#webpage`,
+      url: canonical,
+      name: pageTitle,
+      description,
+      isPartOf: { "@id": `${siteUrl}#website` },
+      about: { "@id": `${siteUrl}#organization` },
+      inLanguage: "zh-CN"
+    }
+  ]
+};
 ---
 
 <!doctype html>
@@ -36,6 +84,7 @@ const themeColor =
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -95,12 +144,7 @@ const themeColor =
         const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         if (!finePointer || reduce) return;
 
-        const magneticSelector = [
-          "a[href]",
-          "button",
-          "[role='button']",
-          "[data-magnetic]"
-        ].join(",");
+        const magneticSelector = ["a[href]", "button", "[role='button']", "[data-magnetic]"].join(",");
         const lensSelector = "[data-magnify]";
 
         let target = null;
@@ -207,19 +251,6 @@ const themeColor =
           document.documentElement.classList.add("is-lens-hit");
         };
 
-        const findLensTarget = (hit, blockedTarget) => {
-          if (blockedTarget) return null;
-
-          const directTarget = hit?.closest(lensSelector);
-          if (directTarget && isWithinLensHitArea(directTarget)) return directTarget;
-
-          for (const item of document.querySelectorAll(lensSelector)) {
-            if (isWithinLensHitArea(item)) return item;
-          }
-
-          return null;
-        };
-
         const getLensHitRects = (item) => {
           const range = document.createRange();
           range.selectNodeContents(item);
@@ -235,6 +266,19 @@ const themeColor =
             const withinY = mouseY >= rect.top - padding && mouseY <= rect.bottom + padding;
             return withinX && withinY;
           });
+        };
+
+        const findLensTarget = (hit, blockedTarget) => {
+          if (blockedTarget) return null;
+
+          const directTarget = hit?.closest(lensSelector);
+          if (directTarget && isWithinLensHitArea(directTarget)) return directTarget;
+
+          for (const item of document.querySelectorAll(lensSelector)) {
+            if (isWithinLensHitArea(item)) return item;
+          }
+
+          return null;
         };
 
         const updateLens = () => {
@@ -353,8 +397,9 @@ const themeColor =
             nextY = centerY + (mouseY - centerY) * 0.18;
           }
 
-          cursorX = lerp(cursorX, nextX, 0.52);
-          cursorY = lerp(cursorY, nextY, 0.52);
+          const cursorEase = target ? 0.18 : 0.32;
+          cursorX = lerp(cursorX, nextX, cursorEase);
+          cursorY = lerp(cursorY, nextY, cursorEase);
           cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0) translate(-50%, -50%)`;
           updateLens();
           requestAnimationFrame(tick);

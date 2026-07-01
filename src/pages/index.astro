@@ -14,9 +14,40 @@ const tickerItems = [
   "数智赋能千行百业",
   "WordeX 在线编辑器",
 ];
+
+const siteUrl = new URL(withBase("/"), Astro.site).toString();
+const wordexUrl = new URL(withBase("/products/wordex"), Astro.site).toString();
+const wordexAppUrl = new URL(withBase("/wordex"), Astro.site).toString();
+const wordexJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": `${wordexUrl}#software`,
+  name: wordex.name,
+  alternateName: wordex.fullName,
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  url: wordexUrl,
+  sameAs: wordexAppUrl,
+  description: wordex.description,
+  offers: {
+    "@type": "Offer",
+    availability: "https://schema.org/PreOrder",
+    price: "0",
+    priceCurrency: "CNY",
+    url: wordexUrl
+  },
+  creator: {
+    "@type": "Organization",
+    "@id": `${siteUrl}#organization`
+  },
+  featureList: wordex.features.map((feature) => feature.title),
+  inLanguage: "zh-CN"
+};
 ---
 
 <Layout title={`${company.name} - ${company.tagline}`} description={company.description} canonicalPath="/" theme="company">
+
+<script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(wordexJsonLd)} />
 
 <style>
 /* ═══════════════════════════════════════════════════════
@@ -785,7 +816,7 @@ header {
 
     <!-- 版面头（期刊信息栏） -->
     <div class="masthead" data-magnify-region>
-      <div class="masthead-meta">
+      <div class="masthead-meta" data-magnify data-magnify-size="92" data-magnify-scale="1.72">
         VOL.1 · NO.1<br />
         BEIJING, P.R. CHINA
       </div>
@@ -793,7 +824,7 @@ header {
         <div class="masthead-title" data-magnify data-magnify-size="96" data-magnify-scale="1.7">SILIWARD</div>
         <div class="masthead-sub">{company.legalNameZh}</div>
       </div>
-      <div class="masthead-meta masthead-meta-r">
+      <div class="masthead-meta masthead-meta-r" data-magnify data-magnify-size="104" data-magnify-scale="1.65">
         {company.legalNameEn}<br />
         ESTABLISHED 2026
       </div>
@@ -808,7 +839,7 @@ header {
 
         <!-- 中央大字主文 -->
         <div class="hero-main" data-magnify-region>
-          <p class="hero-kicker">
+          <p class="hero-kicker" data-magnify data-magnify-size="104" data-magnify-scale="1.7">
             <span>数智创新前沿</span>
             <span class="kicker-rule"></span>
           </p>
@@ -838,15 +869,15 @@ header {
           <!-- 数字条 -->
           <div class="stat-strip">
             <div class="stat-item">
-              <div class="stat-num">01</div>
+              <div class="stat-num" data-magnify data-magnify-size="96" data-magnify-scale="1.72">01</div>
               <div class="stat-label">首款产品</div>
             </div>
             <div class="stat-item">
-              <div class="stat-num">∞</div>
+              <div class="stat-num" data-magnify data-magnify-size="96" data-magnify-scale="1.72">∞</div>
               <div class="stat-label">应用场景</div>
             </div>
             <div class="stat-item">
-              <div class="stat-num">100%</div>
+              <div class="stat-num" data-magnify data-magnify-size="108" data-magnify-scale="1.62">100%</div>
               <div class="stat-label">场景驱动</div>
             </div>
           </div>
@@ -857,7 +888,7 @@ header {
 
         <!-- 右栏：产品特写 -->
         <div class="hero-sidebar" style="padding-left:2rem;">
-          <span class="sidebar-label">首发产品</span>
+          <span class="sidebar-label" data-magnify data-magnify-size="92" data-magnify-scale="1.7">首发产品</span>
 
           <div class="sidebar-frame" id="sidebar-frame" data-magnify-region>
             <div class="frame-badge">
@@ -865,7 +896,7 @@ header {
               {wordex.status}
             </div>
             <div class="frame-name" data-magnify data-magnify-size="104" data-magnify-scale="1.6">{wordex.name}</div>
-            <div class="frame-tagline">// {wordex.tagline}</div>
+            <div class="frame-tagline" data-magnify data-magnify-size="112" data-magnify-scale="1.68">// {wordex.tagline}</div>
             <p class="frame-desc">
               面向技术报告、期刊论文、公务公文等正式文档场景。写作与排版彻底分离，输出合规完整文档。
             </p>
@@ -906,9 +937,9 @@ header {
         { n:"02", title:"定制化开发", text:"结合企业自有业务流程与内部系统，针对性拓展产品功能，贴合团队固有工作模式。" },
         { n:"03", title:"持续迭代", text:"基于已验证的产品基线持续优化，拒绝从零开发一次性项目，保障交付成果长期可用、便于维护。" },
       ].map((s, i) => (
-        <div class="reveal service-item" style={`--reveal-delay:${i*0.1}s`}>
+        <div class="reveal service-item" style={`--reveal-delay:${i*0.1}s`} data-magnify-region>
           <span class="svc-num">{s.n}</span>
-          <div class="svc-title">{s.title}</div>
+          <div class="svc-title" data-magnify data-magnify-size="108" data-magnify-scale="1.64">{s.title}</div>
           <p class="svc-text">{s.text}</p>
         </div>
       ))}
@@ -925,7 +956,7 @@ header {
           感兴趣？<br />
           <span class="cta-red">来聊聊。</span><br />
         </h2>
-        <p class="cta-sub">
+        <p class="cta-sub" data-magnify data-magnify-size="116" data-magnify-scale="1.56">
           如果你想了解产品进展，<br />或有企业合作相关需求，<br />欢迎直接给我们发邮件。
         </p>
       </div>
