@@ -44,6 +44,12 @@ const themeColor =
     <slot name="head" />
   </head>
   <body>
+    <div class="magnetic-cursor" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
     <Navbar theme={theme} />
     <main>
       <slot />
@@ -69,6 +75,172 @@ const themeColor =
           { rootMargin: "0px 0px -10% 0px", threshold: 0.08 }
         );
         items.forEach((el) => io.observe(el));
+      })();
+    </script>
+    <script is:inline>
+      (() => {
+        const cursor = document.querySelector(".magnetic-cursor");
+        if (!cursor) return;
+
+        const finePointer = window.matchMedia("(pointer: fine)").matches;
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (!finePointer || reduce) return;
+
+        const magneticSelector = [
+          "a[href]",
+          "button",
+          "[role='button']",
+          "[data-magnetic]"
+        ].join(",");
+
+        let target = null;
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let cursorX = mouseX;
+        let cursorY = mouseY;
+
+        const lerp = (from, to, amount) => from + (to - from) * amount;
+
+        const resizeTo = (width, height) => {
+          cursor.style.setProperty("--cursor-w", `${Math.min(width + 18, 360)}px`);
+          cursor.style.setProperty("--cursor-h", `${Math.min(height + 14, 132)}px`);
+        };
+
+        const resetSize = () => {
+          cursor.style.removeProperty("--cursor-w");
+          cursor.style.removeProperty("--cursor-h");
+        };
+
+        const isTransparent = (color) => {
+          if (!color || color === "transparent") return true;
+          const match = color.match(/rgba?\(([^)]+)\)/);
+          if (!match) return false;
+          const parts = match[1].split(",").map((part) => Number.parseFloat(part.trim()));
+          return parts.length === 4 && parts[3] === 0;
+        };
+
+        const luminance = (color) => {
+          const match = color.match(/rgba?\(([^)]+)\)/);
+          if (!match) return 1;
+          const [r, g, b] = match[1].split(",").map((part) => Number.parseFloat(part.trim()) / 255);
+          const linear = [r, g, b].map((value) =>
+            value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4
+          );
+          return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+        };
+
+        const backgroundAt = (x, y) => {
+          const previousDisplay = cursor.style.display;
+          cursor.style.display = "none";
+          let node = document.elementFromPoint(x, y);
+          cursor.style.display = previousDisplay;
+
+          let bg = "";
+          while (node && node !== document.documentElement) {
+            bg = getComputedStyle(node).backgroundColor;
+            if (!isTransparent(bg)) break;
+            node = node.parentElement;
+          }
+
+          if (isTransparent(bg)) {
+            bg = getComputedStyle(document.body).backgroundColor;
+          }
+
+          return bg;
+        };
+
+        const syncTone = (hit, nextTarget) => {
+          if (nextTarget) {
+            const rect = nextTarget.getBoundingClientRect();
+            const cursorWidth = Math.min(rect.width + 18, 360);
+            const cursorHeight = Math.min(rect.height + 14, 132);
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const inset = 2;
+            const points = [
+              [centerX - cursorWidth / 2 + inset, centerY - cursorHeight / 2 + inset],
+              [centerX + cursorWidth / 2 - inset, centerY - cursorHeight / 2 + inset],
+              [centerX + cursorWidth / 2 - inset, centerY + cursorHeight / 2 - inset],
+              [centerX - cursorWidth / 2 + inset, centerY + cursorHeight / 2 - inset]
+            ];
+
+            const darkest = points.reduce((min, [x, y]) => {
+              const clampedX = Math.max(0, Math.min(window.innerWidth - 1, x));
+              const clampedY = Math.max(0, Math.min(window.innerHeight - 1, y));
+              return Math.min(min, luminance(backgroundAt(clampedX, clampedY)));
+            }, 1);
+
+            cursor.classList.toggle("is-on-dark", darkest < 0.34);
+            return;
+          }
+
+          let node = hit;
+          let bg = "";
+
+          while (node && node !== document.documentElement) {
+            bg = getComputedStyle(node).backgroundColor;
+            if (!isTransparent(bg)) break;
+            node = node.parentElement;
+          }
+
+          if (isTransparent(bg)) {
+            bg = getComputedStyle(document.body).backgroundColor;
+          }
+
+          cursor.classList.toggle("is-on-dark", luminance(bg) < 0.28);
+        };
+
+        const setTarget = (nextTarget) => {
+          if (nextTarget?.dataset.noMagnetic === "true") nextTarget = null;
+          if (nextTarget === target) return;
+          target = nextTarget;
+
+          if (target) {
+            const rect = target.getBoundingClientRect();
+            resizeTo(rect.width, rect.height);
+            cursor.classList.add("is-locked");
+          } else {
+            resetSize();
+            cursor.classList.remove("is-locked");
+          }
+        };
+
+        document.documentElement.classList.add("has-magnetic-cursor");
+
+        document.addEventListener("mousemove", (event) => {
+          mouseX = event.clientX;
+          mouseY = event.clientY;
+          const hit = document.elementFromPoint(mouseX, mouseY);
+          const nextTarget = hit?.closest(magneticSelector);
+          syncTone(hit, nextTarget);
+          setTarget(nextTarget);
+          cursor.classList.add("is-visible");
+        }, { passive: true });
+
+        document.addEventListener("mouseleave", () => {
+          setTarget(null);
+          cursor.classList.remove("is-visible", "is-locked");
+        });
+
+        const tick = () => {
+          let nextX = mouseX;
+          let nextY = mouseY;
+
+          if (target) {
+            const rect = target.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            nextX = centerX + (mouseX - centerX) * 0.18;
+            nextY = centerY + (mouseY - centerY) * 0.18;
+          }
+
+          cursorX = lerp(cursorX, nextX, 0.22);
+          cursorY = lerp(cursorY, nextY, 0.22);
+          cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0) translate(-50%, -50%)`;
+          requestAnimationFrame(tick);
+        };
+
+        tick();
       })();
     </script>
   </body>
