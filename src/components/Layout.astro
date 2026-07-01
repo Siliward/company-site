@@ -29,6 +29,7 @@ const themeColor =
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content={themeColor} />
+    <link rel="icon" href={withBase("/favicon.ico")} sizes="any" />
     <link rel="canonical" href={canonical} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
@@ -49,6 +50,11 @@ const themeColor =
       <span></span>
       <span></span>
       <span></span>
+    </div>
+    <div class="text-lens" aria-hidden="true">
+      <div class="text-lens__surface">
+        <div class="text-lens__stage"></div>
+      </div>
     </div>
     <Navbar theme={theme} />
     <main>
@@ -80,7 +86,10 @@ const themeColor =
     <script is:inline>
       (() => {
         const cursor = document.querySelector(".magnetic-cursor");
-        if (!cursor) return;
+        const lens = document.querySelector(".text-lens");
+        const lensSurface = lens?.querySelector(".text-lens__surface");
+        const lensStage = lens?.querySelector(".text-lens__stage");
+        if (!cursor || !lens || !lensSurface || !lensStage) return;
 
         const finePointer = window.matchMedia("(pointer: fine)").matches;
         const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -92,12 +101,18 @@ const themeColor =
           "[role='button']",
           "[data-magnetic]"
         ].join(",");
+        const lensSelector = "[data-magnify]";
 
         let target = null;
+        let lensTarget = null;
+        let lensRegion = null;
         let mouseX = window.innerWidth / 2;
         let mouseY = window.innerHeight / 2;
         let cursorX = mouseX;
         let cursorY = mouseY;
+        let lensX = mouseX;
+        let lensY = mouseY;
+        let lensClearTimer = 0;
 
         const lerp = (from, to, amount) => from + (to - from) * amount;
 
@@ -130,10 +145,13 @@ const themeColor =
         };
 
         const backgroundAt = (x, y) => {
-          const previousDisplay = cursor.style.display;
+          const previousCursorDisplay = cursor.style.display;
+          const previousLensDisplay = lens.style.display;
           cursor.style.display = "none";
+          lens.style.display = "none";
           let node = document.elementFromPoint(x, y);
-          cursor.style.display = previousDisplay;
+          cursor.style.display = previousCursorDisplay;
+          lens.style.display = previousLensDisplay;
 
           let bg = "";
           while (node && node !== document.documentElement) {
@@ -147,6 +165,100 @@ const themeColor =
           }
 
           return bg;
+        };
+
+        const stripLensClone = (node) => {
+          node.removeAttribute?.("id");
+          node.removeAttribute?.("data-magnify");
+          node.querySelectorAll?.("[id], [data-magnify]").forEach((child) => {
+            child.removeAttribute("id");
+            child.removeAttribute("data-magnify");
+          });
+        };
+
+        const setLensTarget = (nextTarget) => {
+          if (nextTarget === lensTarget) return;
+          window.clearTimeout(lensClearTimer);
+          lensTarget = nextTarget;
+          lensRegion = lensTarget?.closest("[data-magnify-region]") || lensTarget?.parentElement || lensTarget;
+
+          if (!lensTarget) {
+            lensRegion = null;
+            lens.classList.remove("is-active");
+            cursor.classList.remove("is-lensing");
+            document.documentElement.classList.remove("is-lens-hit");
+            lensClearTimer = window.setTimeout(() => {
+              if (!lensTarget) lensStage.replaceChildren();
+            }, 220);
+            return;
+          }
+
+          lensStage.replaceChildren();
+          const clone = lensRegion.cloneNode(true);
+          stripLensClone(clone);
+          clone.classList.add("text-lens__clone");
+          lensStage.append(clone);
+          lensX = mouseX;
+          lensY = mouseY;
+          lens.classList.remove("is-active");
+          lensSurface.getBoundingClientRect();
+          lens.classList.add("is-active");
+          cursor.classList.add("is-lensing");
+          document.documentElement.classList.add("is-lens-hit");
+        };
+
+        const findLensTarget = (hit, blockedTarget) => {
+          if (blockedTarget) return null;
+
+          const directTarget = hit?.closest(lensSelector);
+          if (directTarget && isWithinLensHitArea(directTarget)) return directTarget;
+
+          for (const item of document.querySelectorAll(lensSelector)) {
+            if (isWithinLensHitArea(item)) return item;
+          }
+
+          return null;
+        };
+
+        const getLensHitRects = (item) => {
+          const range = document.createRange();
+          range.selectNodeContents(item);
+          const rects = [...range.getClientRects()].filter((rect) => rect.width > 1 && rect.height > 1);
+          range.detach();
+          return rects.length ? rects : [item.getBoundingClientRect()];
+        };
+
+        const isWithinLensHitArea = (item) => {
+          const padding = Number.parseFloat(item.dataset.magnifyPadding || "24");
+          return getLensHitRects(item).some((rect) => {
+            const withinX = mouseX >= rect.left - padding && mouseX <= rect.right + padding;
+            const withinY = mouseY >= rect.top - padding && mouseY <= rect.bottom + padding;
+            return withinX && withinY;
+          });
+        };
+
+        const updateLens = () => {
+          if (!lensTarget || !lensRegion) return;
+
+          const regionRect = lensRegion.getBoundingClientRect();
+          const size = Number.parseFloat(lensTarget.dataset.magnifySize || "118");
+          const scale = Number.parseFloat(lensTarget.dataset.magnifyScale || "1.65");
+          const bg = backgroundAt(mouseX, mouseY);
+          const clone = lensStage.firstElementChild;
+
+          lensX = lerp(lensX, mouseX, 0.11);
+          lensY = lerp(lensY, mouseY, 0.11);
+          lens.style.setProperty("--lens-size", `${size}px`);
+          lens.style.setProperty("--lens-bg", bg);
+          lens.style.transform = `translate3d(${lensX}px, ${lensY}px, 0) translate(-50%, -50%)`;
+
+          if (clone) {
+            clone.style.width = `${regionRect.width}px`;
+            clone.style.height = `${regionRect.height}px`;
+            clone.style.left = `${size / 2 - (lensX - regionRect.left) * scale}px`;
+            clone.style.top = `${size / 2 - (lensY - regionRect.top) * scale}px`;
+            clone.style.transform = `scale(${scale})`;
+          }
         };
 
         const syncTone = (hit, nextTarget) => {
@@ -207,18 +319,25 @@ const themeColor =
 
         document.documentElement.classList.add("has-magnetic-cursor");
 
-        document.addEventListener("mousemove", (event) => {
+        const move = (event) => {
+          if (typeof event.clientX !== "number" || typeof event.clientY !== "number") return;
           mouseX = event.clientX;
           mouseY = event.clientY;
           const hit = document.elementFromPoint(mouseX, mouseY);
           const nextTarget = hit?.closest(magneticSelector);
+          const nextLensTarget = findLensTarget(hit, nextTarget);
           syncTone(hit, nextTarget);
           setTarget(nextTarget);
+          setLensTarget(nextLensTarget);
+          updateLens();
           cursor.classList.add("is-visible");
-        }, { passive: true });
+        };
+
+        document.addEventListener("mousemove", move, { passive: true });
 
         document.addEventListener("mouseleave", () => {
           setTarget(null);
+          setLensTarget(null);
           cursor.classList.remove("is-visible", "is-locked");
         });
 
@@ -234,9 +353,10 @@ const themeColor =
             nextY = centerY + (mouseY - centerY) * 0.18;
           }
 
-          cursorX = lerp(cursorX, nextX, 0.22);
-          cursorY = lerp(cursorY, nextY, 0.22);
+          cursorX = lerp(cursorX, nextX, 0.52);
+          cursorY = lerp(cursorY, nextY, 0.52);
           cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0) translate(-50%, -50%)`;
+          updateLens();
           requestAnimationFrame(tick);
         };
 
