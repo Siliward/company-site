@@ -38,6 +38,9 @@ function Invoke-Step {
 
 if (-not $SkipBuild) {
     Invoke-Step "Building site" {
+        # Astro derives canonical/OG URLs from SITE_URL; production deploys must pin the
+        # public origin instead of falling back to the astro.config.mjs default.
+        $env:SITE_URL = "https://www.siliward.com"
         & npm run build
         if ($LASTEXITCODE -ne 0) {
             throw "Build failed."
