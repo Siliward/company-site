@@ -10,7 +10,7 @@ const { theme = "company" } = Astro.props;
 
 const links = [
   { href: "/", label: "公司" },
-  { href: "/products/wordex", label: "WordeX" },
+  { href: "/products/wordex/", label: "WordeX" },
   { href: "/wordex/docs", label: "文档" }
 ];
 ---
@@ -29,10 +29,10 @@ const links = [
       ))}
     </div>
     <a
-      href={withBase("/products/wordex")}
+      href="https://wordex.siliward.com/"
       class="focus-ring inline-flex items-center justify-center rounded-theme bg-accent px-4 py-2 text-sm font-semibold text-accent-contrast shadow-soft transition hover:opacity-90"
     >
-      了解 WordeX
+      打开 WordeX
     </a>
   </nav>
 </header>

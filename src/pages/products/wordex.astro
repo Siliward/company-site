@@ -16,86 +16,86 @@ const softwareSchema = {
 };
 
 const workflow = [
-  ["写", "把标题、章节、图表、公式和引用写清楚，专注内容本身。"],
-  ["看", "随时检查结构和素材，确认没有遗漏。"],
-  ["生成", "按选定的模板，一键导出排版规范的 Word 文档。"],
-  ["复用", "同一套内容和模板，反复用在不同稿件上。"]
+  ["写", "用 WEX、LaTeX 或 Typst 把标题、章节、图表、公式和引用写清楚，专注内容本身。"],
+  ["排", "版式交给模板与编译引擎，文章的增删改纠也可以一句话交代给 Agent。"],
+  ["看", "编译在浏览器本地完成，修改即预览；不限次数、不计时长。"],
+  ["交付", "一键导出规范的 Word 或 PDF，同一套内容与模板反复复用。"]
 ];
 
-// 订阅方案：列 = 个人版各档，行 = 能力
+// 订阅方案：列 = 个人版各档，行 = 能力；价格与额度以产品内商业事实源（wordex-plans.json）为准
 const pricingTiers = [
-  { name: "免费版", en: "Free", price: "¥0", unit: "", note: "先上手，长期免费", featured: false },
-  { name: "体验版", en: "Trial", price: "首周免费", unit: "", note: "注册即享 · 体验完整能力", featured: false },
-  { name: "高级版", en: "Premium", price: "¥39", unit: "/ 月", note: "面向常态创作", featured: true },
-  { name: "专业版", en: "Pro", price: "¥79", unit: "/ 月", note: "面向重度专业用户", featured: false }
+  { name: "体验版", en: "Trial", price: "¥0", unit: "", note: "零成本上手 · 长期免费", featured: false },
+  { name: "标准版", en: "Standard", price: "¥7.99", unit: "/ 月", note: "学生、教师与个人项目 · 8 折", featured: false },
+  { name: "高级版", en: "Premium", price: "¥29.99", unit: "/ 月", note: "高频创作与小组协作 · 6 折", featured: true },
+  { name: "专业版", en: "Pro", price: "¥99.99", unit: "/ 月", note: "研究团队与专业作者 · 5 折", featured: false }
 ];
 
 const pricingGroups = [
   {
     group: "文档与编译",
     rows: [
-      { label: ".wex 编辑与实时预览", values: ["✓", "✓", "✓", "✓"] },
-      { label: "编译导出标准 Word", values: ["基础额度", "首周不限", "不限次", "不限次"] },
-      { label: "项目数量", values: ["最多 3 个", "不限", "不限", "不限"] },
-      { label: "云存储空间", values: ["1 GB", "10 GB", "20 GB", "50 GB"] }
+      { label: "WEX / LaTeX / Typst 编辑与实时预览", values: ["✓", "✓", "✓", "✓"] },
+      { label: "每日编译次数", values: ["20 次", "50 次", "不限", "不限"] },
+      { label: "每日导出下载", values: ["3 次", "15 次", "不限", "不限"] },
+      { label: "云存储空间", values: ["20 MB", "100 MB", "500 MB", "2 GB"] }
     ]
   },
   {
     group: "AI 与 Agent",
     rows: [
-      { label: "智能补全与语法检查", values: ["基础 · 低额度", "高额度", "高额度", "最高额度"] },
-      { label: "平台 Agent 月度额度", values: ["—", "首周体验额度", "含月度额度", "更高额度"] },
-      { label: "更高质量模型", values: ["—", "✓", "✓", "✓"] },
-      { label: "更高并发 · 更长上下文", values: ["—", "✓", "✓", "✓ · 优先"] },
-      { label: "自带 API Key（只收功能费）", values: ["—", "✓", "✓", "✓"] }
+      { label: "文档 Agent（增删改纠、编译、诊断）", values: ["✓", "✓", "✓", "✓"] },
+      { label: "每月 AI 积分", values: ["50", "500", "2,500", "10,000"] },
+      { label: "每周 AI 积分", values: ["20", "200", "1,000", "2,500"] },
+      { label: "Agent 加油包加购", values: ["✓", "✓", "✓", "✓"] }
     ]
   },
   {
     group: "版本管理",
     rows: [
-      { label: "版本历史", values: ["短期保留", "完整历史", "完整历史", "完整历史"] },
-      { label: "命名快照", values: ["—", "✓", "✓", "✓"] },
-      { label: "版本恢复", values: ["—", "✓", "✓", "✓"] },
-      { label: "差异对比", values: ["—", "即将推出", "即将推出", "即将推出"] }
+      { label: "历史版本数量", values: ["3 个", "10 个", "不限", "不限"] },
+      { label: "命名快照 · 版本恢复 · 差异对比", values: ["—", "—", "✓", "✓"] }
     ]
   },
   {
-    group: "协作",
+    group: "协作与模板",
     rows: [
-      { label: "共享与协作", values: ["极少量", "体验", "按需共享", "更多席位"] },
-      { label: "共享模板库", values: ["—", "体验", "✓", "✓"] }
+      { label: "同时编辑人数", values: ["2 人", "3 人", "5 人", "不限"] },
+      { label: "项目最大协作人数", values: ["2 人", "5 人", "15 人", "不限"] },
+      { label: "私有模板数量", values: ["1 个", "5 个", "15 个", "不限"] },
+      { label: "精选模板集合", values: ["—", "—", "✓", "✓"] }
     ]
   }
 ];
 
-// 团队：不是单独套餐，而是批量统一采购个人版，享更低平均单价
+// 团队：组织许可按采购人数阶梯折扣，统一管理、统一开票
 const teamBenefits = [
-  ["统一采购、统一开票", "为整个课题组或团队一次性购买多份高级版 / 专业版，一张发票、一处管理。"],
-  ["管理后台", "在组织后台集中分配席位、查看用量，人员变动随时调整。"],
-  ["共享模板库", "把团队沉淀的模板统一放进共享库，新成员开箱即用、风格一致。"]
+  ["统一采购、统一开票", "为课题组或团队统一采购组织许可，一张发票、一处管理，人员变动随时调整。"],
+  ["共享模板资产", "把团队沉淀的模板统一放进共享库，新成员开箱即用、风格一致。"],
+  ["企业版可选", "需要私有化部署、定制化开发或私域模型接入？企业版按合同单独配置，专人对接。"]
 ];
 
-// 批量采购的平均单价示意（人数越多越便宜）
+// 组织许可团队折扣：人数越多，折扣越低
 const teamPricing = [
-  { seats: "5 人起", premium: "¥34", pro: "¥69", save: "约省 13%" },
-  { seats: "10 人起", premium: "¥29", pro: "¥59", save: "约省 25%" },
-  { seats: "30 人起", premium: "¥25", pro: "¥49", save: "约省 36%" }
+  { seats: "10 人起", discount: "8 折" },
+  { seats: "20 人起", discount: "7 折" },
+  { seats: "50 人起", discount: "6 折" },
+  { seats: "100 人起", discount: "5 折" }
 ];
 
 const addOns = [
-  ["模板单买", "看中某个高级模板，单独买下就行，不必为它升级整档套餐。"],
-  ["Agent 加油包", "额度不够用？随时加购额外的 Agent 额度，用多少买多少。"],
-  ["云存储扩容", "项目和素材越攒越多，单独扩容存储空间，按需增加。"]
+  ["Agent 加油包", "500 / 3,000 / 8,000 积分三档，¥9.99 起，额度不够随时加购，用多少买多少。"],
+  ["协作席位包", "为项目补充协作席位，1 / 5 / 20 席三档可选，随团队规模灵活扩展。"],
+  ["多期预付优惠", "按 3 / 6 / 12 / 24 期预付订阅，周期越长折扣越低，最低 5 折。"]
 ];
 ---
 
-<Layout title={`${wordex.name} - ${wordex.tagline}`} description={wordex.description} canonicalPath="/products/wordex" theme="wordex">
+<Layout title={`${wordex.name} - ${wordex.tagline}`} description={wordex.description} canonicalPath="/products/wordex/" theme="wordex">
   <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(softwareSchema)} />
 
   <!-- Hero：编辑部风 -->
   <section class="section-shell py-16">
     <div class="editorial-rule pt-6">
-      <p class="editorial-kicker text-xs text-accent">WordeX · 中文正式文档</p>
+      <p class="editorial-kicker text-xs text-accent">WordeX · AI 原生多格式在线编辑器</p>
     </div>
     <div class="mt-8 grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
       <div class="rise">
@@ -110,7 +110,7 @@ const addOns = [
         <div class="mt-8 grid max-w-xl gap-3 sm:grid-cols-3">
           {[
             ["专注", "写内容"],
-            ["输出", "Word 文档"],
+            ["输出", "Word / PDF"],
             ["状态", wordex.status]
           ].map(([label, value]) => (
             <div class="border-l-2 border-line-strong pl-4">
@@ -159,7 +159,7 @@ const addOns = [
   <!-- 能力 -->
   <section id="features" class="section-shell py-20">
     <div class="reveal">
-      <SectionHeading eyebrow="它替你省了什么" title="从动笔到成稿，烦人的都包了" text="WordeX 正在内部测试中，先在这里展示产品方向与核心能力。" />
+      <SectionHeading eyebrow="它替你省了什么" title="从动笔到成稿，烦人的都包了" text="WordeX 已正式公测，下面每一项能力，今天打开浏览器就能用。" />
     </div>
     <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
       {wordex.features.map((feature, index) => (
@@ -263,31 +263,27 @@ const addOns = [
       </div>
     </div>
 
-    <!-- 团队：批量采购个人版 -->
+    <!-- 团队：组织许可阶梯折扣 -->
     <div class="reveal mt-16 border-t-2 border-line-strong pt-12">
       <p class="editorial-kicker text-xs text-accent">团队与课题组</p>
-      <h3 class="mt-3 font-display text-2xl font-semibold text-content md:text-3xl">人多一起买，平均更便宜</h3>
-      <p class="mt-3 max-w-2xl text-sm leading-7 text-muted">团队版不是另一套功能，而是为课题组、团队统一采购多份高级版 / 专业版——席位越多，平均单价越低，统一管理、统一开票。</p>
+      <h3 class="mt-3 font-display text-2xl font-semibold text-content md:text-3xl">组织许可，人多折扣多</h3>
+      <p class="mt-3 max-w-2xl text-sm leading-7 text-muted">为课题组或团队统一采购组织许可：10 人起享 8 折，100 人起低至 5 折，统一管理、统一开票。个人版权益不变，席位随团队规模扩展。</p>
 
       <div class="mt-8 grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-        <!-- 阶梯单价 -->
+        <!-- 阶梯折扣 -->
         <div class="overflow-hidden border border-line-strong">
           <table class="w-full border-collapse text-left">
             <thead>
               <tr class="bg-elev">
                 <th class="border-b border-line p-4"><span class="editorial-kicker text-xs text-accent">采购规模</span></th>
-                <th class="border-b border-line p-4"><span class="editorial-kicker text-xs text-accent">高级版 / 人·月</span></th>
-                <th class="border-b border-line p-4"><span class="editorial-kicker text-xs text-accent">专业版 / 人·月</span></th>
-                <th class="border-b border-line p-4 text-right"><span class="editorial-kicker text-xs text-accent">较单买</span></th>
+                <th class="border-b border-line p-4 text-right"><span class="editorial-kicker text-xs text-accent">组织许可折扣</span></th>
               </tr>
             </thead>
             <tbody>
               {teamPricing.map((row) => (
                 <tr class="border-t border-line">
                   <td class="p-4 text-sm font-medium text-content">{row.seats}</td>
-                  <td class="p-4 font-display text-base font-semibold text-content">{row.premium}</td>
-                  <td class="p-4 font-display text-base font-semibold text-content">{row.pro}</td>
-                  <td class="p-4 text-right text-sm font-semibold text-accent">{row.save}</td>
+                  <td class="p-4 text-right font-display text-base font-semibold text-accent">{row.discount}</td>
                 </tr>
               ))}
             </tbody>
@@ -310,7 +306,7 @@ const addOns = [
       </div>
     </div>
 
-    <p class="reveal mt-10 text-xs leading-6 text-faint">价格与额度为上线前的方案示意，最终以正式发布为准。体验版于注册后首周免费体验完整能力，到期自动转为免费版。自带 API Key 时不消耗平台模型额度，仅收取平台功能费，但仍受套餐能力与平台治理限制。</p>
+    <p class="reveal mt-10 text-xs leading-6 text-faint">价格与额度以产品内定价页与定价规则为准；多期预付享 9 折至 5 折优惠，Agent 加油包与协作席位包可随时加购。自带模型密钥（BYOK）时不消耗平台积分。企业版提供私有化部署、定制化开发与私域模型接入，权益按合同单独配置。</p>
   </section>
 
   <!-- 适用场景 -->
@@ -329,14 +325,14 @@ const addOns = [
     </div>
   </section>
 
-  <!-- 预留入口 -->
+  <!-- 在线入口 -->
   <section class="section-shell py-20">
     <div class="reveal border border-line-strong bg-surface p-10 text-center md:p-14">
-      <p class="editorial-kicker text-xs text-accent">敬请期待</p>
-      <h2 class="mt-3 font-display text-3xl font-semibold text-content md:text-4xl">在线编辑器，马上就来</h2>
-      <p class="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted">正式开放后，你就能在这里建文档、在线写，然后一键生成规范的 Word。</p>
+      <p class="editorial-kicker text-xs text-accent">正式公测</p>
+      <h2 class="mt-3 font-display text-3xl font-semibold text-content md:text-4xl">无需安装，现在开写</h2>
+      <p class="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted">打开浏览器注册即可使用：建项目、在线写、让 AI 帮你排版，一键导出规范的 Word 与 PDF。</p>
       <div class="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-        <ButtonLink href={wordex.reservedPath}>查看在线入口</ButtonLink>
+        <ButtonLink href={wordex.reservedPath}>打开 WordeX</ButtonLink>
         <ButtonLink href="/#services" variant="secondary">了解公司服务</ButtonLink>
       </div>
     </div>

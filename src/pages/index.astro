@@ -16,8 +16,8 @@ const tickerItems = [
 ];
 
 const siteUrl = new URL(withBase("/"), Astro.site).toString();
-const wordexUrl = new URL(withBase("/products/wordex"), Astro.site).toString();
-const wordexAppUrl = new URL(withBase("/wordex"), Astro.site).toString();
+const wordexUrl = new URL(withBase("/products/wordex/"), Astro.site).toString();
+const wordexAppUrl = "https://wordex.siliward.com/";
 const wordexJsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
@@ -31,7 +31,7 @@ const wordexJsonLd = {
   description: wordex.description,
   offers: {
     "@type": "Offer",
-    availability: "https://schema.org/PreOrder",
+    availability: "https://schema.org/InStock",
     price: "0",
     priceCurrency: "CNY",
     url: wordexUrl
@@ -898,16 +898,16 @@ header {
             <div class="frame-name" data-magnify data-magnify-size="104" data-magnify-scale="1.6">{wordex.name}</div>
             <div class="frame-tagline" data-magnify data-magnify-size="112" data-magnify-scale="1.68">// {wordex.tagline}</div>
             <p class="frame-desc">
-              面向技术报告、期刊论文、公务公文等正式文档场景。写作与排版彻底分离，输出合规完整文档。
+              WEX / LaTeX / Typst 一种语法写作，浏览器本地编译、实时协作、内置文档 Agent，输出规范的 Word 与 PDF。
             </p>
             <div class="frame-tags">
-              {["技术报告","期刊论文","公务公文","Word 输出","模板系统"].map(t => (
+              {["AI 文档 Agent","端侧编译","实时协作","模板市场","Word / PDF 输出"].map(t => (
                 <span class="frame-tag">{t}</span>
               ))}
             </div>
             <div class="frame-cta">
-              <a href={withBase("/products/wordex")} class="btn-frame">认识 WordeX</a>
-              <a href={withBase("/wordex")} class="btn-frame-ghost">在线入口</a>
+              <a href={withBase("/products/wordex/")} class="btn-frame">认识 WordeX</a>
+              <a href="https://wordex.siliward.com/" class="btn-frame-ghost">在线入口</a>
             </div>
           </div>
         </div>
@@ -965,7 +965,7 @@ header {
           联系商务合作
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h12M7.5 1.5L13 7l-5.5 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
-        <a href={withBase("/products/wordex")} class="btn-cta-ghost">了解 WordeX →</a>
+        <a href={withBase("/products/wordex/")} class="btn-cta-ghost">了解 WordeX →</a>
       </div>
     </div>
   </div>
