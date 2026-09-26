@@ -20,3 +20,11 @@
   ```powershell
   powershell -ExecutionPolicy Bypass -File .\scripts\deploy-sili.ps1
   ```
+- The script must run with Windows-native `tar`/`ssh` (plain PowerShell). From Git Bash, prefix `PATH="/c/Windows/System32:/c/Windows/System32/OpenSSH:$PATH"` — Git's MSYS tar misreads drive-letter archive paths and Git's ssh reads `D:\Home\.ssh\config` (which carries the `siliward` alias for this machine).
+
+## Server-Side Redirects (Nginx)
+
+- The production Nginx config `/etc/nginx/sites-available/siliward.com` carries durable product-entry redirects that bypass the static docroot: `/wordex` and `/products/wordex` (both slash forms) return `302 https://wordex.siliward.com/` immediately.
+- These rules are maintained on the server, not generated from this repo. The repo still builds static meta-refresh pages at the same paths as a fallback if the Nginx rules are ever removed.
+- Nginx config backups live in `/root/nginx-backups/` on the server (first redirect change: `siliward.com.before-wordex-302-20260926-223234`).
+- After deploys that change public pages, the Aliyun ESA edge cache for `www.siliward.com` must be purged manually (ESA console → 站点管理 → siliward.com → 刷新缓存), or the edge keeps serving the old pages for weeks.
